@@ -1,16 +1,34 @@
 {
-  "name": "kanbanbackend",
+  "name": "",
   "version": "1.0.0",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon index"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "description": "",
+  "main": "index.js",
+  "type": "module",
+  "license": "AGPL-version-3.0",
+  "private": false,
+  "engines": {
+    "node": ">= 14.0.0",
+    "npm": ">= 6.0.0"
+  },
+  "homepage": "",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "bugs": "",
+  "keywords": [],
+  "author": {
+    "name": "",
+    "email": "",
+    "url": ""
+  },
+  "contributors": [],
+  "scripts": {
+    "dev": "",
+    "test": ""
+  },
   "dependencies": {
+    "express": "^4.21.1",
     "mongodb": "^6.10.0"
   }
 }
