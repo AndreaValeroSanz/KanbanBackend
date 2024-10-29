@@ -1,17 +1,18 @@
 import express from 'express';
+import { auth } from '../auth.js';
 const router = express.Router();
 
 // Define your routes here
-router.get('/', (req, res) => {
+router.get('/', auth,(req, res) => {
   res.send('Hello, World!');
 });
 
-router.get('/users', (req, res) => {
-  res.send('List of users');
+router.get('/taskget', (req, res) => {
+  res.send('List of Tasks');
 });
 
-router.post('/users', (req, res) => {
-  res.send('Create a new user');
+router.post('/taskpost', (req, res) => {
+  res.send('Create a new task');
 });
 
 // Export the router
