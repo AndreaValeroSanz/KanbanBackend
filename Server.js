@@ -48,11 +48,10 @@ app.listen(port, () => console.log(`App listening on port ${port}!`))
 // const createuser = async () => {
 //     try {
 //       const user = new User({
-//         _id: new mongoose.Types.ObjectId(), // Use 'new' with ObjectId constructor
-//         name: "andrea",
-//         surname: "eqw",
+//         name: "elena",
+//         surname1: "eqw",
 //         surname2: "weq",
-//         email: "dasdas@gmai.com",
+//         email: "dasdas@gmail.com",
 //         password: "securePass123"
 //       });
 //       await user.save();
