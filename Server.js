@@ -3,9 +3,7 @@ import express from "express";
 import TaskRouter from './routes/TaskRouter.js';
 import UsersRouter from './routes/UsersRouter.js';
 import { connectDB } from "./config/db.js";
-import User from './models/user.js';
-import Project from './models/project.js';
-import mongoose from "mongoose";
+import cors from "cors";
 
 
 //instanciamos nueva aplicación express
@@ -13,6 +11,9 @@ const app = express();
 
 //necesario para poder recibir datos en json
 app.use(express.json());
+app.use(cors({
+    origin: 'http://localhost:5173' // Reemplaza con la URL de tu front-end
+  }));
 
 //conectamos la base de datos
 connectDB();
