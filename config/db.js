@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const MONGO_URI = "mongodb+srv://avalerosanz:root@cluster0.oqdti.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+const MONGO_URI = "mongodb+srv://avalerosanz:root@cluster0.oqdti.mongodb.net/Kanban_JS?retryWrites=true&w=majority&appName=Cluster0";
 
 const connectDB = async () => {
 
