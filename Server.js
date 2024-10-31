@@ -1,36 +1,67 @@
-//importamos express y controladores
 import express from "express";
 import TaskRouter from './routes/TaskRouter.js';
 import UsersRouter from './routes/UsersRouter.js';
 import { connectDB } from "./config/db.js";
 import cors from "cors";
+import { graphqlHTTP } from "express-graphql";
+import { buildSchema } from "graphql";
+import User from './models/user.js'; // Asegúrate de tener el modelo User
 
-
-//instanciamos nueva aplicación express
+// Instanciamos la aplicación Express
 const app = express();
 
-//necesario para poder recibir datos en json
+// Configuración para recibir JSON y permitir CORS
 app.use(express.json());
-app.use(cors({
-    origin: 'http://localhost:5173' // Reemplaza con la URL de tu front-end
-  }));
+app.use(cors({ origin: 'http://localhost:5173' }));
 
-//conectamos la base de datos
+// Conectamos la base de datos
 connectDB();
 
-//las rutas que empiecen por /api/alumnes se dirigirán a alumnesRouter
-app.use('/api/task', TaskRouter);
+// Definimos el esquema de GraphQL
+const schema = buildSchema(`
+  type User {
+    id: ID!
+    name: String
+    surname1: String
+    surname2: String
+    email: String
+  }
 
-//las rutas que empiecen por /api/users se dirigirán a usersRouter
+  type Query {
+    users: [User]
+  }
+`);
+
+// Definimos los resolvers para GraphQL
+const root = {
+  users: async () => {
+    try {
+      return await User.find();
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      throw new Error("Error al obtener usuarios");
+    }
+  }
+};
+
+// Configuramos el endpoint de GraphQL
+app.use('/graphql', graphqlHTTP({
+  schema: schema,
+  rootValue: root,
+  graphiql: true // Habilita GraphiQL en el navegador
+}));
+
+// Rutas adicionales
+app.use('/api/task', TaskRouter);
 app.use('/api/users', UsersRouter);
 
-// servimos front como ruta estática
+// Servimos el front-end como ruta estática
 app.use(express.static('FRONT/dist'));
 
+// Iniciamos el servidor
+const port = 3000;
+app.listen(port, () => console.log(`App listening on port ${port}!`));
 
-//arranque del servidor
-const port = 3000
-app.listen(port, () => console.log(`App listening on port ${port}!`))
 
 
 

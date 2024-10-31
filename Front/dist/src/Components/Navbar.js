@@ -34,12 +34,26 @@ class navbar extends HTMLElement {
 
         fetchUserButton.addEventListener("click", async () => {
           try {
-            // Hacer una solicitud fetch al puerto 3000
-            const response = await fetch("http://localhost:3000/api/users/userget", {
-              method: "GET",
+            // Definimos la consulta GraphQL
+            const query = `
+              query {
+                users {
+                  id
+                  name
+                  surname1
+                  surname2
+                  email
+                }
+              }
+            `;
+        
+            // Hacemos la solicitud fetch a la ruta GraphQL en el puerto 3000
+            const response = await fetch("http://localhost:3000/graphql", {
+              method: "POST",
               headers: {
                 "Content-Type": "application/json",
-              }
+              },
+              body: JSON.stringify({ query })
             });
         
             // Comprobar si la respuesta es exitosa
@@ -51,17 +65,15 @@ class navbar extends HTMLElement {
             const data = await response.json();
         
             // Mostrar los datos en la consola o procesarlos como necesites
-            console.log("respuesta router" + data);
-
-            data.forEach((user, index) => {
-              console.log(`Usuario ${index + 1}:`, user);
-            });
+            console.log("respuesta router", data.data.users);
+        
             // Puedes insertar los datos en el DOM aquí si lo deseas
         
           } catch (error) {
             console.error("Error fetching users:", error);
           }
         });
+        
         
   }
 }
