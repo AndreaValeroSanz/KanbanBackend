@@ -48,7 +48,7 @@ class navbar extends HTMLElement {
             `;
         
             // Hacemos la solicitud fetch a la ruta GraphQL en el puerto 3000
-            const response = await fetch("http://localhost:3000/graphql", {
+            const response = await fetch("http://localhost:3000/api/users/graphql", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
