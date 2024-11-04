@@ -28,6 +28,8 @@
     "test": ""
   },
   "dependencies": {
+    "apollo-server-express": "^3.13.0",
+    "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "express": "^4.21.1",
     "express-graphql": "^0.12.0",

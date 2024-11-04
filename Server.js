@@ -1,70 +1,64 @@
-// server.js o app.js
-import express from "express";
-import TaskRouter from './routes/TaskRouter.js';
-import UsersRouter from './routes/UsersRouter.js';
-import { connectDB } from "./config/db.js";
-import cors from "cors";
+import express from 'express';
+import { ApolloServer } from 'apollo-server-express';
+import typeDefs from './Schemas/Schema.js';
+import resolvers from './Resolvers/Resolver.js';
+import mongoose from 'mongoose';
+import { connectDB } from './config/db.js';
+import { auth } from './auth.js';
 
-// Instancia de la aplicación Express
 const app = express();
 
-// Configuración para recibir JSON y permitir CORS
-app.use(express.json());
-app.use(cors({ origin: 'http://localhost:5173' }));
+const startServer = async () => {
+  const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+    context: ({ req }) => {
+      // Ejecuta el middleware de autenticación y obtiene el userId
+      let userId = null;
+      try {
+        auth(req, null, () => {
+          userId = req.userId; // Asigna el userId del token al contexto
+        });
+      } catch (err) {
+        console.error("Error de autenticación:", err.message);
+      }
 
-// Conexión a la base de datos
-connectDB();
+      return { userId }; // Pasa userId al contexto de los resolvers
+    },
+  });
 
-// Rutas adicionales
-app.use('/api/task', TaskRouter);
-app.use('/api/users', UsersRouter);
+  await server.start();
+  server.applyMiddleware({ app });
+  
+  connectDB();
 
-// Servir el front-end como ruta estática
-app.use(express.static('FRONT/dist'));
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => {
+    console.log(`Servidor corriendo en http://localhost:${PORT}${server.graphqlPath}`);
+  });
+};
 
-// Iniciar el servidor
-const port = 3000;
-app.listen(port, () => console.log(`App listening on port ${port}!`));
+startServer();
 
-
-// const getProjects = async() => {
-//     try {
-//         const projects = await Project.find(); // Fetch all users
-//         console.log(projects); // Log all users to the console
-//         // res.json(users); // Send the users as a JSON response
-//       } catch (error) {
-//         console.error(error);
-//         // res.status(500).json({ message: "An error occurred while fetching users" });
-//       }
+// query {
+//   getAllCards {
+//     _id
+//     title
+//     description
+//     duedate
+//     type
+//     color
+//     user_id
+//     projects_id
+//   }
 // }
-// getProjects();
 
-// const createuser = async () => {
-//     try {
-//       const user = new User({
-//         name: "elena",
-//         surname1: "eqw",
-//         surname2: "weq",
-//         email: "dasdas@gmail.com",
-//         password: "securePass123"
-//       });
-//       await user.save();
-//       console.log("User created:", user);
-//     } catch (error) {
-//       console.error("Error creating user:", error);
+// mutation {
+//   login(email: "usuario@example.com", password: "password123") {
+//     token
+//     user {
+//       _id
+//       email
 //     }
-//   };
-  
-//   createuser();
-  
-// const getUsers = async() => {
-//     try {
-//         const users = await User.find(); // Fetch all users
-//         console.log(users); // Log all users to the console
-//         // res.json(users); // Send the users as a JSON response
-//       } catch (error) {
-//         console.error(error);
-//         // res.status(500).json({ message: "An error occurred while fetching users" });
-//       }
+//   }
 // }
-// getUsers();
