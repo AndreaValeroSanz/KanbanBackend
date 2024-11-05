@@ -11,6 +11,7 @@ const resolvers = {
         if (!userId) {
           throw new Error('No autorizado');
         }
+        //pasar como payload el project id en la request
         
         // Filtra las cards del usuario autenticado
         const cards = await Card.find({ user_id: userId });

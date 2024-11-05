@@ -16,11 +16,11 @@ const CardSchema = new Schema({
   },
   type: {
     type: String, // Array de strings
-    required: true,
+    required: [true],
   },
   color: {
     type: String, // Array de strings
-    required: true,
+    required: [true],
   },
   user_id: {
     type: mongoose.Schema.Types.ObjectId,
@@ -30,7 +30,7 @@ const CardSchema = new Schema({
   projects_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Project', // Referencia al modelo Project
-    required: false,
+    required: true,
   },
 }, { timestamps: false });
 

@@ -16,8 +16,7 @@ const auth = (req, res, next) => {
 		} else {
 			const { expiredAt } = decoded;
 			if (expiredAt > new Date().getTime()) {
-                req.userId = decoded.id;
-				
+                req.userId = decoded.id;	
 				next();
 			} else {
 				return res.json({ error: 'token caducado' });
