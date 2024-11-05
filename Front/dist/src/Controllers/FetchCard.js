@@ -2,56 +2,87 @@ document.addEventListener('DOMContentLoaded', function () {
   getAllTasks();
 });
 
-function getAllTasks() {
+async function getAllTasks() {
   const taskContainer = document.getElementById('taskContainer');
-  let lastTaskId = localStorage.getItem("lastTaskId");
+  const token = localStorage.getItem('token'); // Asume que el token de autenticación está en localStorage
 
-  // Check if `lastTaskId` exists and that `taskContainer` is available
-  if (!lastTaskId || !taskContainer) { 
-      console.log("No tasks found or taskContainer is missing.");
-      return;
+  
+  // Verifica que el contenedor de tareas exista
+  if (!taskContainer) { 
+    console.log("El contenedor de tareas (taskContainer) no está disponible.");
+    return;
   }
 
-  // Parse the last task ID as an integer
-  lastTaskId = parseInt(lastTaskId);
+const query = `
+  query {
+    getAllCards {
+      _id
+      title
+      description
+      duedate
+      type
+      color
+      user_id
+      projects_id
+    }
+  }
+`;
 
-  for (let i = 1; i <= lastTaskId; i++) {
-      const taskKey = `task-${i}`;
-      const task = localStorage.getItem(taskKey);
 
-      // Check if the task data exists in localStorage
-      if (task) {
-          const [title, description, dueDate, workarea] = task.split(';');
-          const postItColour = getColor(workarea);
+  try {
+    // Realiza el fetch a tu servidor GraphQL para obtener las tarjetas
+    const response = await fetch('http://localhost:3000/graphql', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`, // Incluye el token en el encabezado
+      },
+      body: JSON.stringify ({ query}),
+      
 
-          // Create a TaskStickerController element for each task
-          const taskStickerController = document.createElement('task-sticker-controller');
-          taskStickerController.setAttribute('title', title);
-          taskStickerController.setAttribute('data-key', taskKey);
-          taskStickerController.setAttribute('description', description);
-          taskStickerController.setAttribute('postItColour', postItColour);
-          taskStickerController.setAttribute('dueDate', new Date(dueDate).toISOString().split('T')[0]);
+    });
 
-          // Wrap the task sticker controller in a div for draggable functionality
-          const wrapper = document.createElement('div');
-          wrapper.classList.add('drag'); // For drag-and-drop capability
-          wrapper.appendChild(taskStickerController);
+    const result = await response.json();
+    const cards = result.data.getAllCards;
 
-          // Append the wrapper to the taskContainer
-          taskContainer.appendChild(wrapper);
-      } else {
-          console.log(`Task ${i} does not exist.`);
-      }
+    // Revisa si hay tarjetas para mostrar
+    if (!cards || cards.length === 0) {
+      console.log("No se encontraron tarjetas.");
+      return;
+    }
+
+    // Itera sobre cada tarjeta y crea un elemento en el DOM
+    cards.forEach((card) => {
+      const { title, description, duedate, type } = card;
+      const postItColour = getColor(type); // Asume que 'type' representa el área de trabajo
+
+      // Crea un elemento 'task-sticker-controller' para cada tarjeta
+      const taskStickerController = document.createElement('task-sticker-controller');
+      taskStickerController.setAttribute('title', title);
+      taskStickerController.setAttribute('description', description);
+      taskStickerController.setAttribute('postItColour', postItColour);
+      taskStickerController.setAttribute('dueDate', new Date(duedate).toISOString().split('T')[0]);
+
+      // Envuelve el controlador en un div para funcionalidad de arrastrar y soltar
+      const wrapper = document.createElement('div');
+      wrapper.classList.add('drag');
+      wrapper.appendChild(taskStickerController);
+
+      // Añade el contenedor al taskContainer
+      taskContainer.appendChild(wrapper);
+    });
+  } catch (error) {
+    console.error('Error al obtener las tarjetas:', error);
   }
 }
 
-// Helper function to determine color based on the work area
+// Función de ayuda para determinar el color basado en el tipo
 function getColor(workarea) {
   switch (workarea) {
-      case "Front": return "pink";
-      case "Back": return "blue";
-      case "Server": return "yellow";
-      case "Testing": return "green";
-      default: return "yellow"; // default color if no match
+    case "Front": return "pink";
+    case "Back": return "blue";
+    case "Server": return "yellow";
+    case "Testing": return "green";
+    default: return "yellow"; // color por defecto si no coincide
   }
 }
