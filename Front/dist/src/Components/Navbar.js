@@ -8,7 +8,8 @@ class Navbar extends HTMLElement {
     const userEmail = localStorage.getItem("userEmail");
 
     this.innerHTML = `
-      <nav class="navbar p-0 m-0">
+
+     <!--<nav class="navbar p-0 m-0">
         <div class="w-100 d-flex justify-content-between">
           <div class="container">
             <div class="bg-gray rounded-3 w-25 px-2">
@@ -19,7 +20,7 @@ class Navbar extends HTMLElement {
                 placeholder="Search for anything..."
               />
             </div>
-          </div>
+          </div> --> 
 
           ${
             userEmail 
@@ -31,7 +32,7 @@ class Navbar extends HTMLElement {
                  </div>`
               : `<button 
                   type="button" 
-                  class="btn btn-primary" 
+                  class="btn btn-primary d-flex align-items-center" 
                   data-bs-toggle="modal" 
                   data-bs-target="#loginModal" 
                   data-bs-whatever="email">

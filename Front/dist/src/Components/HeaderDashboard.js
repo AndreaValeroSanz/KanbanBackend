@@ -18,7 +18,7 @@ class Header extends HTMLElement {
               </div>
             </div>
             <div class="col-lg-10 d-flex justify-content-end">
-              <my-collaborators class="divcolaborator-section"></my-collaborators> 
+              <!-- <my-collaborators class="divcolaborator-section"></my-collaborators>  --> 
             </div>
           </div>
   
