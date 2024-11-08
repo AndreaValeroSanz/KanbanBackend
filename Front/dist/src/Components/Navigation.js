@@ -1,4 +1,4 @@
-class Navigation extends HTMLElement {
+/*class Navigation extends HTMLElement {
   connectedCallback() {
     this.innerHTML = `
         <div class="NavItems">
@@ -25,4 +25,4 @@ class Navigation extends HTMLElement {
 }
 
 // Define custom element
-customElements.define("my-navigation", Navigation);
+customElements.define("my-navigation", Navigation);*/
