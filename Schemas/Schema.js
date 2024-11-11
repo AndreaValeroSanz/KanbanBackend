@@ -1,4 +1,5 @@
 import { gql } from 'apollo-server-express';
+
 const typeDefs = gql`
   type Card {
     _id: ID!
@@ -36,6 +37,7 @@ const typeDefs = gql`
       color: String
       projects_id: ID
     ): Card!
+    deleteCard(id: ID!): Card! # Nueva mutación para borrar una tarjeta
 
     editCard(
       id_: ID!
