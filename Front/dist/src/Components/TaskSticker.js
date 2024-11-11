@@ -19,6 +19,7 @@ class TaskSticker extends HTMLElement {
       workarea: this.getAttribute('workarea') || '',
       dataKey: this.getAttribute('data-key') || `task-${Math.floor(Math.random() * 10000)}`,
       modalId: `taskModal-${Math.floor(Math.random() * 10000)}`,
+      cardId: this.getAttribute('card-id') // Asegúrate de obtener correctamente el atributo 'card-id'
     };
   }
 
@@ -26,6 +27,7 @@ class TaskSticker extends HTMLElement {
     this.setAttribute('data-key', attributes.dataKey);
     this.setAttribute('data-modal-id', attributes.modalId);
     console.log("Initializing TaskSticker with dataKey:", attributes.dataKey);
+    console.log("Card ID:", attributes.cardId); // Verifica que el Card ID sea válido
   }
 
   render(attributes) {
@@ -46,6 +48,7 @@ class TaskSticker extends HTMLElement {
     `;
   }
 
+  // Aquí se crea el HTML de la tarjeta
   getCardHTML({ title, dueDate, postItColour, modalId }) {
     return  `
     <style>
@@ -208,9 +211,17 @@ class TaskSticker extends HTMLElement {
     const modal = this.querySelector(`#${modalId}`);
 
     if (card && modal) {
-      card.addEventListener('click', () => this.showModal(modal));
-      modal.querySelector('.save-task').addEventListener('click', () => this.saveTask(dataKey, modalId));
-      modal.querySelector('.delete-task').addEventListener('click', () => this.deleteTask(dataKey));
+      // Usa `bind(this)` para asegurarte de que `this` se refiera a la instancia de `TaskSticker`
+      card.addEventListener('click', this.showModal.bind(this, modal));
+      modal.querySelector('.delete-task').addEventListener('click', () => {
+        const cardId = this.getAttribute('card-id'); // Obtener 'card-id' directamente aquí
+        if (!cardId || cardId === "null" || cardId === "undefined") {
+          console.error("Invalid cardId:", cardId);
+          alert("No se puede eliminar la tarea: ID de la tarjeta no válido.");
+          return;
+        }
+        this.deleteTask(dataKey, cardId);
+      });
     } else {
       console.error(`Modal or card element not found. Modal ID: ${modalId}`);
     }
@@ -221,33 +232,52 @@ class TaskSticker extends HTMLElement {
     modalInstance.show();
   }
 
-  saveTask(dataKey, modalId) {
-    const title = this.getValue(`#editTitle-${modalId}`);
-    const dueDate = this.getValue(`#editDueDate-${modalId}`);
-    const description = this.getValue(`#editDescription-${modalId}`);
-    const workarea = Array.from(this.querySelectorAll('.workarea-option'))
-      .filter(checkbox => checkbox.checked)
-      .map(checkbox => checkbox.value)
-      .join(',');
 
-    const taskData = `${title};${description};${dueDate};${workarea}`;
-    localStorage.setItem(dataKey, taskData);
-    console.log("Task updated:", taskData);
+  async deleteTask(dataKey, cardId) {
+    const token = localStorage.getItem('token');
 
-    alert('Task updated successfully!');
-    window.location.reload();
+    // Confirmar antes de eliminar
+    if (!confirm('Are you sure you want to delete this task?')) {
+      return;
+    }
+
+    try {
+      // Realizar la solicitud para eliminar la tarea de la base de datos
+      const query = `
+        mutation {
+          deleteCard(id: "${cardId}") {
+            _id
+            title
+          }
+        }
+      `;
+
+      const response = await fetch('http://localhost:3000/graphql', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ query }),
+      });
+
+      const result = await response.json();
+
+      if (result.errors) {
+        throw new Error(result.errors[0].message);
+      }
+
+      // Eliminar la tarjeta del DOM y del localStorage
+      localStorage.removeItem(dataKey);
+      this.remove();
+      alert('Task deleted successfully!');
+      window.location.reload();
+    } catch (error) {
+      console.error('Error deleting task:', error);
+      alert(`Error: ${error.message}`);
+    }
   }
 
-  deleteTask(dataKey) {
-    localStorage.removeItem(dataKey);
-    this.remove();
-    window.location.reload();
-  }
-
-  getValue(selector) {
-    const element = this.querySelector(selector);
-    return element ? element.value : '';
-  }
 }
 
 customElements.define('task-sticker', TaskSticker);
