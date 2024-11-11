@@ -13,23 +13,23 @@ const startServer = async () => {
     typeDefs,
     resolvers,
     context: ({ req }) => {
-      // Ejecuta el middleware de autenticación y obtiene el userId
-      let userId = null;
       try {
-        auth(req, null, () => {
-          userId = req.userId; // Asigna el userId del token al contexto
-        });
+        // Llama al middleware de autenticación
+        auth(req, null, () => {});
+        
+        // Retorna el contexto con `userId` solo si la autenticación es exitosa
+        return { userId: req.userId };
       } catch (err) {
         console.error("Error de autenticación:", err.message);
+        throw new Error("No autorizado");
       }
-
-      return { userId }; // Pasa userId al contexto de los resolvers
     },
   });
 
   await server.start();
   server.applyMiddleware({ app });
-  
+
+  // Conexión a la base de datos
   connectDB();
 
   const PORT = process.env.PORT || 3000;
@@ -39,6 +39,7 @@ const startServer = async () => {
 };
 
 startServer();
+
 
 // query {
 //   getAllCards {

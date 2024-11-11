@@ -16,11 +16,11 @@ const CardSchema = new Schema({
   },
   type: {
     type: String, // Array de strings
-    required: [true],
+    required: true,
   },
   color: {
     type: String, // Array de strings
-    required: [true],
+    required: true,
   },
   user_id: {
     type: mongoose.Schema.Types.ObjectId,

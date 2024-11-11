@@ -1,13 +1,12 @@
 import { gql } from 'apollo-server-express';
-
 const typeDefs = gql`
   type Card {
     _id: ID!
     title: String!
     description: String!
     duedate: String!
-    type: [String]!
-    color: [String]!
+    type: String
+    color: String
     user_id: ID!
     projects_id: ID!
   }
@@ -29,6 +28,14 @@ const typeDefs = gql`
 
   type Mutation {
     login(email: String!, password: String!): AuthPayload!
+    createCard(
+      title: String!
+      description: String!
+      duedate: String!
+      type: String
+      color: String
+      projects_id: ID!
+    ): Card!
   }
 `;
 
