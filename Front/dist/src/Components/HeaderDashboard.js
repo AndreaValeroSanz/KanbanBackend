@@ -69,31 +69,31 @@ class Header extends HTMLElement {
             <div class="">
               <ul class="list-unstyled d-flex justify-content-end">
                 <li class="py-1 ps-3">
-                  <button type="button" class=" p-0 border-0">
+                  <span class=" p-0 border-0">
                     <i class="bi bi-circle-fill pe-2" style="color: #4da167;"></i>
                     Testing
-                  </button>
+                  </span>
                 </li>
   
                 <li class="py-1 ps-3">
-                  <button type="button" class=" p-0 border-0">
+                  <span  class=" p-0 border-0">
                     <i class="bi bi-circle-fill pe-2" style="color: #2589bd;"></i>
                     Back
-                  </button>
+                  </span>
                 </li>
   
                 <li class="py-1 ps-3">
-                  <button type="button" class=" p-0 border-0">
+                  <span class=" p-0 border-0">
                     <i class="bi bi-circle-fill pe-2" style="color: #f5bb00;"></i>
                     Server
-                  </button>
+                  </span>
                 </li>
   
                 <li class="py-1 ps-3">
-                  <button type="button" class=" p-0 border-0">
+                  <span  class=" p-0 border-0">
                     <i class="bi bi-circle-fill pe-2" style="color: #ed98b4;"></i>
                     Front
-                  </button>
+                  </span>
                 </li>
               </ul>
             </div>
