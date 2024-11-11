@@ -36,6 +36,17 @@ const typeDefs = gql`
       color: String
       projects_id: ID!
     ): Card!
+
+    editCard(
+      id_: ID!
+      title: String
+      description: String
+      duedate: String
+      type: String
+      color: String
+      user_id: ID
+      projects_id: ID
+    ): Card
   }
 `;
 
