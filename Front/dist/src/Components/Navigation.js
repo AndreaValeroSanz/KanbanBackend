@@ -1,6 +1,6 @@
-class Navigation extends HTMLElement {
-    connectedCallback() {
-      this.innerHTML = `
+/*class Navigation extends HTMLElement {
+  connectedCallback() {
+    this.innerHTML = `
         <div class="NavItems">
           <img src="/public/assets/IconosMenuLateral/members_icon.svg" alt="Members Icon" />
           <p class="py-1 m-0">Members</p>
@@ -21,9 +21,8 @@ class Navigation extends HTMLElement {
           <p class="py-1 m-0">Tasks</p>
         </div>
       `;
-    }
   }
-  
-  // Define custom element
-  customElements.define("my-navigation", Navigation);
-  
+}
+
+// Define custom element
+customElements.define("my-navigation", Navigation);*/

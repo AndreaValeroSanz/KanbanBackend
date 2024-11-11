@@ -19,12 +19,12 @@
 <body onload="dragInit()">
   <div class="px-5">
     <div class="row">
-      <div class="menu col-lg-2 topbar BorderRight">
+      <div class="menu col-lg-2 topbar ">
         <div class="text-center">
           <p>Midnight coffee warriors</p>
         </div>
       </div>
-
+     
       <div class="col-lg-10 topbar">
         <div class="d-flex justify-content-end">
         <my-navbar></my-navbar>
@@ -32,48 +32,50 @@
       </div>
     </div>
 
-    <div class="row">
-      <div class="py-3 col-lg-2 myprojects">
-        <my-navigation></my-navigation>
-        <my-projects></my-projects>
-      </div>
+   
 
-      <div class="py-3 col-lg-10">
+      <div class="py-3 col-lg-12">
         <my-header></my-header>
         <div class="row pt-5">
-          <div class="task-board d-flex justify-content-around">
+          <div class="task-board d-flex justify-content-center gap-5 py-5">
 
             <!-- Task Columns -->
-            <task-column id="on-hold" title="On hold" taskIcon="./public/Assets/iconosTaskColumns/On_hold.svg">
-              <div slot="content" class="overflow" id="taskContainer">
 
-              </div>
-              
-          </task-column>
+            <!-- Columna "On Hold" -->
+  <div class="col-lg-2">
+    <task-column id="on-hold" title="On hold" taskIcon="./public/Assets/iconosTaskColumns/On_hold.svg">
+      <div slot="content" class="overflow" id="taskContainer"></div>
+    </task-column>
+  </div>
 
-          <task-column id="not-started" title="Not Started" taskIcon="./public/Assets/iconosTaskColumns/Not_started.svg">
-              <div slot="content" class="overflow">
+  <!-- Columna "Not Started" -->
+  <div class="col-lg-2">
+    <task-column id="not-started" title="Not Started" taskIcon="./public/Assets/iconosTaskColumns/Not_started.svg">
+      <div slot="content" class="overflow"></div>
+    </task-column>
+  </div>
 
-              </div>
-          </task-column>
-          
-          <task-column id="in-progress" title="In progress" taskIcon="./public/Assets/iconosTaskColumns/In_progress.svg">
-              <div slot="content" class="overflow">
+  <!-- Columna "In Progress" -->
+  <div class="col-lg-2">
+    <task-column id="in-progress" title="In progress" taskIcon="./public/Assets/iconosTaskColumns/In_progress.svg">
+      <div slot="content" class="overflow"></div>
+    </task-column>
+  </div>
 
-              </div>
-          </task-column>
-          
-          <task-column id="review-ready" title="Review Ready" taskIcon="./public/Assets/iconosTaskColumns/Review_ready.svg">
-              <div slot="content" class="overflow">
+  <!-- Columna "Review Ready" -->
+  <div class="col-lg-2">
+    <task-column id="review-ready" title="Review Ready" taskIcon="./public/Assets/iconosTaskColumns/Review_ready.svg">
+      <div slot="content" class="overflow"></div>
+    </task-column>
+  </div>
 
-              </div>
-          </task-column>
-          
-          <task-column id="done" title="Done" taskIcon="./public/Assets/iconosTaskColumns/Done.svg">
-              <div slot="content" class="overflow">
-
-              </div>
-          </task-column>
+  <!-- Columna "Done" -->
+  <div class="col-lg-2">
+    <task-column id="done" title="Done" taskIcon="./public/Assets/iconosTaskColumns/Done.svg">
+      <div slot="content" class="overflow"></div>
+    </task-column>
+  </div>
+</div>
  <!-- <task-sticker-xl></task-sticker-xl> -->
           <add-task></add-task>
 
