@@ -56,7 +56,11 @@ const resolvers = {
         if (!userId) {
           throw new Error('No autorizado');
         }
-
+    
+        // Usar la ID por defecto si no se proporciona projects_id
+        const defaultProjectId = "67224b9d9040a876aa6e7013";
+        const projectIdToUse = projects_id || defaultProjectId;
+    
         // Crea una nueva tarjeta
         const newCard = new Card({
           title,
@@ -64,17 +68,18 @@ const resolvers = {
           duedate,
           type,
           color,
-          user_id: userId, // Asocia la tarjeta al usuario autenticado
-          projects_id,
+          user_id: userId,
+          projects_id: projectIdToUse,
         });
-
+    
         // Guarda la tarjeta en la base de datos
         const savedCard = await newCard.save();
         return savedCard;
       } catch (error) {
+        console.error('Error en el resolver createCard:', error);
         throw new Error(error.message);
       }
-    },
+    },    
   },
 };
 

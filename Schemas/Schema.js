@@ -34,7 +34,7 @@ const typeDefs = gql`
       duedate: String!
       type: String
       color: String
-      projects_id: ID!
+      projects_id: ID
     ): Card!
   }
 `;
