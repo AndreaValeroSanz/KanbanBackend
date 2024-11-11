@@ -6,13 +6,12 @@ const SECRET_KEY = "gommit";
 
 const resolvers = {
   Query: {
-    getAllCards: async (_, __, { userId }) => { // Usamos userId del contexto
+    getAllCards: async (_, __, { userId }) => {
       try {
         if (!userId) {
           throw new Error('No autorizado');
         }
-        //pasar como payload el project id en la request
-        
+
         // Filtra las cards del usuario autenticado
         const cards = await Card.find({ user_id: userId });
         return cards;
@@ -44,6 +43,34 @@ const resolvers = {
           token,
           user,
         };
+      } catch (error) {
+        throw new Error(error.message);
+      }
+    },
+    createCard: async (
+      _,
+      { title, description, duedate, type, color, projects_id },
+      { userId }
+    ) => {
+      try {
+        if (!userId) {
+          throw new Error('No autorizado');
+        }
+
+        // Crea una nueva tarjeta
+        const newCard = new Card({
+          title,
+          description,
+          duedate,
+          type,
+          color,
+          user_id: userId, // Asocia la tarjeta al usuario autenticado
+          projects_id,
+        });
+
+        // Guarda la tarjeta en la base de datos
+        const savedCard = await newCard.save();
+        return savedCard;
       } catch (error) {
         throw new Error(error.message);
       }
