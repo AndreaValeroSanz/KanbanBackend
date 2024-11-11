@@ -6,8 +6,8 @@ const typeDefs = gql`
     title: String!
     description: String!
     duedate: String!
-    type: [String]!
-    color: [String]!
+    type: [String]
+    color: [String]
     user_id: ID!
     projects_id: ID!
   }
