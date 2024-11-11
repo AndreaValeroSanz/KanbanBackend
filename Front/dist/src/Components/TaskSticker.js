@@ -173,7 +173,7 @@ class TaskSticker extends HTMLElement {
             </div>
             <div class="modal-body">
               <div class="mb-3">
-                <input type="text" class="form-control" id="editDueDate-${modalId}" placeholder="Due Date" value="${dueDate}">
+                <input type="date" class="form-control" id="editDueDate-${modalId}" placeholder="Due Date" value="${dueDate}">
               </div>
               <div class="mb-3">
                 <textarea class="form-control" id="editDescription-${modalId}" rows="3" placeholder="Task Description">${description}</textarea>
