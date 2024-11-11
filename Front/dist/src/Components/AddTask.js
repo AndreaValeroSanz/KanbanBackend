@@ -183,13 +183,20 @@ class AddTask extends HTMLElement {
     // Define la ID del proyecto por defecto
     const defaultProjectId = "67224b9d9040a876aa6e7013";
   
+    //conversor duadte a foramto dd/mm/aaaa
+    const dateObj = new Date(duedate);
+    const day = String(dateObj.getDate()).padStart(2,"0");
+    const month = String(dateObj.getMonth()+1).padStart(2,"0");
+    const year = dateObj.getFullYear();
+    const formattedDueDate = `${day}/${month}/${year}`;
+
     // Construye la consulta GraphQL
     const query = `
       mutation {
         createCard(
           title: "${title}",
           description: "${description}",
-          duedate: "${duedate}",
+          duedate: "${formattedDueDate}",
           type: "${type}",
           color: "${color}", 
           projects_id: "${defaultProjectId}"
