@@ -18,7 +18,7 @@ class AddTask extends HTMLElement {
         tabindex="-1"
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
-      >
+       >
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">

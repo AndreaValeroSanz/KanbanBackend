@@ -53,7 +53,7 @@ class Header extends HTMLElement {
                       </button>
                     </li>
                     <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="#">Add n&#101;w Project</a></li>
+                <li><a class="dropdown-item" id= "openTaskModalProject" href="#">Add n&#101;w Project</a></li>
 
                   </ul>
                     </ul>
@@ -99,6 +99,10 @@ class Header extends HTMLElement {
             </div>
           </div>
         </div>`;
+        this.querySelector('#openTaskModalProject').addEventListener('click', () => {
+          const event = new CustomEvent('openTaskModalProject')  });
+          window.dispatchEvent(event);
+       });
   }
 }
 
