@@ -4,13 +4,11 @@ class AddTask extends HTMLElement {
   }
 
   connectedCallback() {
-    // Ensure AddTask listens for the custom event
     window.addEventListener('openTaskModal', () => {
       const modal = new bootstrap.Modal(this.querySelector('#exampleModal'), {});
       modal.show();
     });
 
-    // Modal HTML structure
     this.innerHTML = `
       <div
         class="modal fade"
@@ -65,7 +63,7 @@ class AddTask extends HTMLElement {
                       type="radio"
                       name="workarea"
                       id="workFront"
-                      value="Front"
+                      value="pink"
                     />
                     <label class="form-check-label" for="workFront">
                       Frontend
@@ -77,7 +75,7 @@ class AddTask extends HTMLElement {
                       type="radio"
                       name="workarea"
                       id="workBack"
-                      value="Back"
+                      value="blue"
                     />
                     <label class="form-check-label" for="workBack">
                       Backend
@@ -89,7 +87,7 @@ class AddTask extends HTMLElement {
                       type="radio"
                       name="workarea"
                       id="workServer"
-                      value="Server"
+                      value="yellow"
                     />
                     <label class="form-check-label" for="workServer">
                       Server
@@ -101,7 +99,7 @@ class AddTask extends HTMLElement {
                       type="radio"
                       name="workarea"
                       id="workTesting"
-                      value="Testing"
+                      value="green"
                     />
                     <label class="form-check-label" for="workTesting">
                       Testing
@@ -139,8 +137,99 @@ class AddTask extends HTMLElement {
           </div>
         </div>
       </div>
+    
     `;
+
+    // Add event listener to the "Create Task" button
+    this.querySelector('#save-task').addEventListener('click', this.createTask.bind(this));
   }
+
+  async createTask() {
+    const title = this.querySelector('#task-title').value;
+    const description = this.querySelector('#task-desc').value;
+    const duedate = this.querySelector('#task-deadline').value;
+    const workarea = this.querySelector('input[name="workarea"]:checked')?.value;
+  
+    // Valor por defecto para `type`
+    const type = "on-hold";
+  
+    // Determinar el color basado en `workarea`
+    let color;
+    switch (workarea) {
+      case "Front":
+        color = "pink";
+        break;
+      case "Back":
+        color = "blue";
+        break;
+      case "Server":
+        color = "yellow";
+        break;
+      case "Testing":
+        color = "green";
+        break;
+      default:
+        color = "grey"; // Color por defecto si `workarea` no coincide con ningún caso
+    }
+  
+    const token = localStorage.getItem('token');
+  
+    // Asegúrate de que todos los campos obligatorios estén llenos
+    if (!title || !duedate || !workarea) {
+      alert('Please fill in all required fields.');
+      return;
+    }
+  
+    // Define la ID del proyecto por defecto
+    const defaultProjectId = "67224b9d9040a876aa6e7013";
+  
+    // Construye la consulta GraphQL
+    const query = `
+      mutation {
+        createCard(
+          title: "${title}",
+          description: "${description}",
+          duedate: "${duedate}",
+          type: "${type}",
+          color: "${color}", 
+          projects_id: "${defaultProjectId}"
+        ) {
+          _id
+          title
+          description
+          duedate
+          type
+          color
+          user_id
+          projects_id
+        }
+      }
+    `;
+  
+    try {
+      const response = await fetch('http://localhost:3000/graphql', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ query }),
+      });
+  
+      const result = await response.json();
+  
+      if (result.errors) {
+        throw new Error(result.errors[0].message);
+      }
+  
+      alert('Task created successfully!');
+      window.location.reload(); // Reload the page or update the UI as needed
+    } catch (error) {
+      console.error('Error creating task:', error);
+      alert(`Error: ${error.message}`);
+    }
+  }
+
 }
 
 // Define custom element
