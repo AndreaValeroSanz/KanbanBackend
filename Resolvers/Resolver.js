@@ -81,7 +81,11 @@ const resolvers = {
       }
     },
     
-    editCard: async (_, { cardId, title, description, duedate, type, color, projects_id }, { userId }) => {
+    editCard: async (
+      _, 
+      { cardId, title, description, duedate, type, color, projects_id },
+      { userId }
+      ) => {
       try {
         // Verifica si el usuario está autenticado
         if (!userId) {
