@@ -97,6 +97,42 @@ const resolvers = {
         throw new Error(error.message);
       }
     },
+    
+    editCard: async (
+      _, 
+      { cardId, title, description, duedate, type, color, projects_id },
+      { userId }
+      ) => {
+      try {
+        // Verifica si el usuario está autenticado
+        if (!userId) {
+          throw new Error('No autorizado');
+        }
+
+        // Encuentra y actualiza la tarjeta con los campos proporcionados
+        const updatedCard = await Card.findByIdAndUpdate(
+          cardId, // Primer parámetro debe ser el cardId
+          {
+            ...(title && { title }),
+            ...(description && { description }),
+            ...(duedate && { duedate }),
+            ...(type && { type }),
+            ...(color && { color }),
+            ...(projects_id && { projects_id }),
+          },
+          { new: true } // crea el documento actualizado
+        );
+
+        // Verifica si la tarjeta fue encontrada
+        if (!updatedCard) {
+          throw new Error('Tarjeta no encontrada');
+        }
+
+        return updatedCard; // devuelve la tarjeta actualizada
+      } catch (error) {
+        throw new Error(`Error al editar la tarjeta: ${error.message}`);
+      }
+    },
   },
 };
 

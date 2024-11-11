@@ -38,6 +38,17 @@ const typeDefs = gql`
       projects_id: ID
     ): Card!
     deleteCard(id: ID!): Card! # Nueva mutación para borrar una tarjeta
+
+    editCard(
+      id_: ID!
+      title: String
+      description: String
+      duedate: String
+      type: String
+      color: String
+      user_id: ID
+      projects_id: ID
+    ): Card
   }
 `;
 
