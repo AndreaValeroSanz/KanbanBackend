@@ -7,24 +7,22 @@ class TaskSticker extends HTMLElement {
     const attributes = this.getAttributes();
     this.setUniqueIdentifiers(attributes);
     this.render(attributes);
-    this.addEventListeners(attributes.modalId, attributes.dataKey);
+    this.addEventListeners(attributes.workarea, attributes.dataKey);
   }
 
   getAttributes() {
     return {
       title: this.getAttribute('title') || 'Untitled Task',
       description: this.getAttribute('description') || 'Please, remember to write a task description.',
-      postItColour: this.getAttribute('postItColour'),
-      dueDate: this.getAttribute('dueDate') || 'No date assigned.',
-      workarea: this.getAttribute('workarea') || '',
-      dataKey: this.getAttribute('data-key') || `task-${Math.floor(Math.random() * 10000)}`,
-      modalId: `taskModal-${Math.floor(Math.random() * 10000)}`,
+      postItColour: this.getAttribute('color'),
+      dueDate: this.getAttribute('duedate') || 'No date assigned.',
+      workarea: this.getAttribute('type') || '',
+      dataKey: this.getAttribute('_id'),      
     };
   }
 
   setUniqueIdentifiers(attributes) {
-    this.setAttribute('data-key', attributes.dataKey);
-    this.setAttribute('data-modal-id', attributes.modalId);
+    this.setAttribute('_id', attributes.dataKey);   
     console.log("Initializing TaskSticker with dataKey:", attributes.dataKey);
   }
 
@@ -46,7 +44,7 @@ class TaskSticker extends HTMLElement {
     `;
   }
 
-  getCardHTML({ title, dueDate, postItColour, modalId }) {
+  getCardHTML({ title, dueDate, postItColour}) {
     return  `
     <style>
         .card-margin {
@@ -162,21 +160,21 @@ class TaskSticker extends HTMLElement {
         `;
   }
 
-  getModalHTML({ title, description, dueDate, modalId, postItColour }, selectedWorkareas) {
+  getModalHTML({ title, description, dueDate, postItColour, dataKey }, selectedWorkareas) {
     return `
-      <div class="modal fade" id="${modalId}" tabindex="-1" aria-labelledby="${modalId}Label" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+      <div class="modal fade" id="${dataKey}" tabindex="-1" aria-labelledby="${dataKey}Label" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content background-${postItColour}">
             <div class="modal-header">
-              <input type="text" class="form-control" id="editTitle-${modalId}" placeholder="Task Title" value="${title}">
+              <input type="text" class="form-control" id="editTitle-${dataKey}" placeholder="Task Title" value="${title}">
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
               <div class="mb-3">
-                <input type="text" class="form-control" id="editDueDate-${modalId}" placeholder="Due Date" value="${dueDate}">
+                <input type="text" class="form-control" id="editDueDate-${dataKey}" placeholder="Due Date" value="${dueDate}">
               </div>
               <div class="mb-3">
-                <textarea class="form-control" id="editDescription-${modalId}" rows="3" placeholder="Task Description">${description}</textarea>
+                <textarea class="form-control" id="editDescription-${dataKey}" rows="3" placeholder="Task Description">${description}</textarea>
               </div>
               <div class="mb-3">
                 <label>Workarea</label>
@@ -203,16 +201,16 @@ class TaskSticker extends HTMLElement {
     `).join('');
   }
 
-  addEventListeners(modalId, dataKey) {
+  addEventListeners(dataKey) {
     const card = this.querySelector('.card');
-    const modal = this.querySelector(`#${modalId}`);
+    const modal = this.querySelector(`#${dataKey}`);
 
     if (card && modal) {
       card.addEventListener('click', () => this.showModal(modal));
-      modal.querySelector('.save-task').addEventListener('click', () => this.saveTask(dataKey, modalId));
+      modal.querySelector('.save-task').addEventListener('click', () => this.saveTask(dataKey));
       modal.querySelector('.delete-task').addEventListener('click', () => this.deleteTask(dataKey));
     } else {
-      console.error(`Modal or card element not found. Modal ID: ${modalId}`);
+      console.error(`Modal or card element not found. Card ID: ${dataKey}`);
     }
   }
 
@@ -221,10 +219,10 @@ class TaskSticker extends HTMLElement {
     modalInstance.show();
   }
 
-  saveTask(dataKey, modalId) {
-    const title = this.getValue(`#editTitle-${modalId}`);
-    const dueDate = this.getValue(`#editDueDate-${modalId}`);
-    const description = this.getValue(`#editDescription-${modalId}`);
+  saveTask(dataKey) {
+    const title = this.getValue(`#editTitle-${dataKey}`);
+    const dueDate = this.getValue(`#editDueDate-${dataKey}`);
+    const description = this.getValue(`#editDescription-${dataKey}`);
     const workarea = Array.from(this.querySelectorAll('.workarea-option'))
       .filter(checkbox => checkbox.checked)
       .map(checkbox => checkbox.value)
