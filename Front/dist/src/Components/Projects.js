@@ -40,6 +40,10 @@ class Projects extends HTMLElement {
                             id="message-text"
                             required>
                       </div>
+                       <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" id="save-task">Create Project</button>
+            </div>
                   </div>
               </div>
           </div>`;
