@@ -133,22 +133,23 @@ class TaskSticker extends HTMLElement {
                 <div class="card card-margin  background-${postItColour}">
                    
                     <div class="card-body d-flex pt-0 g-0 p-0 mx-2 row background-${postItColour}">
-                      <h5 class="card-title background-${postItColour} text-center py-2" id="card-title">${title}</h5>
+                      <h5 class="card-title background-${postItColour} text-center p-2" id="card-title">${title}</h5>
                                    
-                                <div class="background-${postItColour} d-flex  align-self-center ">
+                                <div class="background-${postItColour} d-flex py-2 ">
                                     <span class=" d-flex align-self-end background-${postItColour}">${dueDate}</span>
                               
     
                                    
                                
                                             ${'' /* < <div class="btn-task background-${postItColour} d-flex justify-content-end pe-1 pb-1" role="group" aria-label="Collaborators icons">
-                                              <button type="button" class="btn background-${postItColour}">img src="https://placehold.co/40x40"></img> */}
+                                            <button type="button" class="btn background-${postItColour}">img src="https://placehold.co/40x40"></img></button> */}
                                                 
-                                        </button>
+                                        
                             </div>
                     
                         
-                            
+                          
+                  
                         </div>
                              
                 </div>
