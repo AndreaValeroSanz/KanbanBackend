@@ -69,7 +69,7 @@ async function getAllTasks() {
       const dueDateString = dueDateValue && !isNaN(dueDateValue.getTime())
         ? dueDateValue.toISOString().split('T')[0]
         : 'Sin fecha';
-
+ 
       // Crea un elemento 'task-sticker' para cada tarjeta
       const taskSticker = document.createElement('task-sticker');
       taskSticker.setAttribute('title', title);
