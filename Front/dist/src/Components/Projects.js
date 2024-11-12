@@ -47,4 +47,4 @@ class Projects extends HTMLElement {
     }
 }
             
-customElements.define('projects', Projects);
+customElements.define('add-projects', Projects);

@@ -65,7 +65,7 @@ async function getAllTasks() {
     console.log(title, description, duedate, type);
     
       // Validar `duedate` antes de usar `toISOString()`
-      const dueDateValue = duedate ? new Date(duedate) : null;
+      const dueDateValue = duedate ? new Date(Number(duedate)) : null;
       const dueDateString = dueDateValue && !isNaN(dueDateValue.getTime())
         ? dueDateValue.toISOString().split('T')[0]
         : 'Sin fecha'; // Valor por defecto o mensaje si `duedate` es inválido

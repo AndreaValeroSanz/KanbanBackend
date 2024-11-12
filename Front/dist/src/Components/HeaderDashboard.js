@@ -1,4 +1,4 @@
-class Header extends HTMLElement {
+class HeaderDashboard extends HTMLElement {
   constructor() {
     super();
   }
@@ -98,13 +98,14 @@ class Header extends HTMLElement {
               </ul>
             </div>
           </div>
+
         </div>`;
         this.querySelector('#openTaskModalProject').addEventListener('click', () => {
-          const event = new CustomEvent('openTaskModalProject')  });
+          const event = new CustomEvent('openTaskModalProject');
           window.dispatchEvent(event);
        });
   }
 }
 
 // Define custom element
-customElements.define("my-header", Header);
+customElements.define("my-header", HeaderDashboard);
