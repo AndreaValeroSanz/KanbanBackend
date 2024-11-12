@@ -73,8 +73,8 @@ class TaskSticker extends HTMLElement {
             background-clip: border-box;
             border: 1px solid #e6e4e9;
             border-radius: 8px;
-            width: 18vh;
-            height: 18vh;
+            width: 20vh;
+            height: 20vh;
         }
     
         .card .card-header.no-border {
@@ -82,7 +82,7 @@ class TaskSticker extends HTMLElement {
         }
     
         .card .card-header {
-            background: none;
+            background: red;
             padding: 0 0.9375rem;
             font-weight: 500;
             display: flex;
@@ -133,16 +133,17 @@ class TaskSticker extends HTMLElement {
                 <div class="card card-margin  background-${postItColour}">
                    
                     <div class="card-body d-flex pt-0 g-0 p-0 mx-2 row background-${postItColour}">
-                      <h5 class="card-title background-${postItColour} text-center" id="card-title">${title}</h5>
+                      <h5 class="card-title background-${postItColour} text-center py-2" id="card-title">${title}</h5>
                                    
                                 <div class="background-${postItColour} d-flex  align-self-center ">
                                     <span class=" d-flex align-self-end background-${postItColour}">${dueDate}</span>
                               
     
                                    
-                                <div class="btn-task background-${postItColour} d-flex justify-content-end pe-1 pb-1" role="group" aria-label="Collaborators icons">
-                                            <button type="button" class="btn background-${postItColour}">
-                                                <img src="https://placehold.co/40x40"></img>
+                               
+                                            ${'' /* < <div class="btn-task background-${postItColour} d-flex justify-content-end pe-1 pb-1" role="group" aria-label="Collaborators icons">
+                                              <button type="button" class="btn background-${postItColour}">img src="https://placehold.co/40x40"></img> */}
+                                                
                                         </button>
                             </div>
                     
