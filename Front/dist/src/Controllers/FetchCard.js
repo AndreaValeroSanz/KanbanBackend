@@ -71,6 +71,10 @@ async function getAllTasks() {
         : 'Sin fecha';
 
       // Crea un elemento 'task-sticker' para cada tarjeta
+      const dragDiv = document.createElement('div');
+      dragDiv.classList.add('drag');
+      dragDiv.setAttribute('draggable', 'true'); // Set draggable to true
+
       const taskSticker = document.createElement('task-sticker');
       taskSticker.setAttribute('title', title);
       taskSticker.setAttribute('description', description);
@@ -79,8 +83,11 @@ async function getAllTasks() {
       taskSticker.setAttribute('card-id', _id); // Asigna el 'card-id' correctamente
 
       // Añade el contenedor al taskContainer
-      taskContainer.appendChild(taskSticker);
+      dragDiv.appendChild(taskSticker);
+
+      taskContainer.appendChild(dragDiv);
     });
+    dragInit();
   } catch (error) {
     console.error('Error al obtener las tarjetas:', error);
   }
