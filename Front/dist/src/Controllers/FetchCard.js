@@ -3,11 +3,20 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 async function getAllTasks() {
-  const taskContainer = document.getElementById('taskContainer');
-  const token = localStorage.getItem('token'); // Obtén el token de localStorage
+  const token = localStorage.getItem('token'); // Get the token from localStorage
 
-  if (!taskContainer) { 
-    console.log("El contenedor de tareas (taskContainer) no está disponible.");
+  // Define the columns with the correct IDs
+  const columns = {
+    "on-hold": document.getElementById('on-hold'),
+    "not-started": document.getElementById('not-started'),
+    "in-progress": document.getElementById('in-progress'),
+    "review-ready": document.getElementById('review-ready'),
+    "done": document.getElementById('done')
+  };
+
+  // Check if all the columns are available
+  if (!columns["on-hold"] || !columns["not-started"] || !columns["in-progress"] || !columns["review-ready"] || !columns["done"]) {
+    console.error("One or more task columns are not available.");
     return;
   }
 
@@ -37,7 +46,7 @@ async function getAllTasks() {
     });
 
     if (!response.ok) {
-      throw new Error(`Error en la respuesta del servidor: ${response.status}`);
+      throw new Error(`Server response error: ${response.status}`);
     }
 
     const result = await response.json();
@@ -49,28 +58,28 @@ async function getAllTasks() {
     const cards = result.data.getAllCards;
 
     if (!cards || cards.length === 0) {
-      console.log("No se encontraron tarjetas.");
+      console.log("No cards found.");
       return;
     }
 
-    // Itera sobre cada tarjeta y crea un elemento en el DOM
+    // Iterate over each card and create an element in the DOM
     cards.forEach((card) => {
-      const { _id, title, description, duedate, type } = card;
+      const { _id, title, description, duedate, type, color } = card;
 
       if (!_id) {
         console.error("Card ID is null or undefined:", card);
         return;
       }
 
-      const postItColour = getColor(type);
-      console.log(`Card ID: ${_id}, Title: ${title}, Description: ${description}, Due Date: ${duedate}, Type: ${type}`);
+      const postItColour = color;
+      console.log(`Card ID: ${_id}, Title: ${title}, Description: ${description}, Due Date: ${duedate}, Type: ${type}, Color: ${color}`);
 
-      const dueDateValue = duedate ? new Date(Number(duedate)) : null;
+      const dueDateValue = duedate ? new Date(duedate) : null;
       const dueDateString = dueDateValue && !isNaN(dueDateValue.getTime())
         ? dueDateValue.toISOString().split('T')[0]
         : 'Sin fecha';
- 
-      // Crea un elemento 'task-sticker' para cada tarjeta
+
+      // Create a draggable div
       const dragDiv = document.createElement('div');
       dragDiv.classList.add('drag');
       dragDiv.setAttribute('draggable', 'true'); // Set draggable to true
@@ -80,25 +89,28 @@ async function getAllTasks() {
       taskSticker.setAttribute('description', description);
       taskSticker.setAttribute('postItColour', postItColour);
       taskSticker.setAttribute('dueDate', dueDateString);
-      taskSticker.setAttribute('card-id', _id); // Asigna el 'card-id' correctamente
+      taskSticker.setAttribute('card-id', _id); // Assign the 'card-id' correctly
 
-      // Añade el contenedor al taskContainer
       dragDiv.appendChild(taskSticker);
 
-      taskContainer.appendChild(dragDiv);
-    });
-    dragInit();
-  } catch (error) {
-    console.error('Error al obtener las tarjetas:', error);
-  }
-}
+      // Use the type directly to match the column keys
+      const normalizedType = type.toLowerCase();
+      const targetColumn = columns[normalizedType] || columns["done"]; // Default to "done" if type is unrecognized
 
-function getColor(workarea) {
-  switch (workarea) {
-    case "Front": return "pink";
-    case "Back": return "blue";
-    case "Server": return "yellow";
-    case "Testing": return "green";
-    default: return "yellow"; 
+      if (targetColumn) {
+        const contentSlot = targetColumn.querySelector('[slot="content"]');
+        if (contentSlot) {
+          contentSlot.appendChild(dragDiv);
+        } else {
+          console.error(`Content slot not found for column with type: ${normalizedType}`);
+        }
+      } else {
+        console.error(`No target column found for card type: ${normalizedType}`);
+      }
+    });
+
+    dragInit(); // Initialize the drag-and-drop functionality
+  } catch (error) {
+    console.error('Error fetching cards:', error);
   }
 }
