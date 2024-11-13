@@ -10,6 +10,10 @@ class TaskSticker extends HTMLElement {
     this.addEventListeners(attributes.modalId, attributes.dataKey);
   }
 
+  disconnectedCallback() {
+    this.removeEventListeners(); // Clean up listeners when removed from DOM
+  }
+
   getAttributes() {
     return {
       title: this.getAttribute('title') || 'Untitled Task',
@@ -222,11 +226,79 @@ class TaskSticker extends HTMLElement {
     }
   }
 
+  removeEventListeners() {
+    if(this.cardElement && this.modalElement) {
+        this.cardElement.removeEventListener('click', this.showModal);
+        this.modalElement.querySelector('.delete-task').removeEventListener('click', this.deleteTask);
+        this.modalElement.querySelector('.save-task').removeEventListener('click', this.shareTask);
+    }
+  }
+
+
   showModal(modal) {
     const modalInstance = bootstrap.Modal.getOrCreateInstance(modal, { backdrop: 'static', keyboard: false });
     modalInstance.show();
   }
 
+  //ferran creando.
+
+  async fetchGraphQL(query,token){
+    try{
+      const response = await fetch('http://localhost:3000/graphql', {
+        
+      })
+    }
+  }
+async saveChanges(dataKey, cardId) {
+  const token = localStorage.getItem('token');
+  if (!confirm('Are you sure you want to apply the changes to this task?')) {
+    return;
+  }
+  const title = this.querySelector('#editTitle-${dataKey}').value;
+  const description = this.querySelector('#editDescription-${dataKey}').value;
+  const dueDate = this.querySelector('#editDueDate-${dataKey}').value;
+  
+try {
+  const query = `
+    mutation {
+      editCard(id:"${cardId}"){
+      _id
+      title
+      description
+      duedate
+      type
+      color
+      user_id
+      projects_id
+      }
+    }
+  `;
+  
+   const response = await fetch('http://localhost:3000/graphql', {
+  method: 'POST', 
+  headers:{
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`,
+  },
+  body: JSON.stringify({ query }),
+});
+ 
+
+  const result = await response.json();
+
+  if (result.errors) {
+    throw new Error(result.errors[0].message);
+  } 
+
+  localStorage.setItem(dataKey, JSON.stringify(result.data.editCard));
+
+  alert('Changes applied successfully!');
+  window.location.reload();
+  } catch (error) {
+    console.error('Error saving changes:', error);
+    alert(`Error: ${error.message}`);
+  }
+}
 
   async deleteTask(dataKey, cardId) {
     const token = localStorage.getItem('token');
