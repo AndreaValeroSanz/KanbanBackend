@@ -11,7 +11,7 @@ const CardSchema = new Schema({
     required: true,
   },
   duedate: {
-    type: Date,
+    type: String,
     required: true,
   },
   type: {
