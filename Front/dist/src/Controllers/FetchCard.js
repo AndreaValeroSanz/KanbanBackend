@@ -65,11 +65,11 @@ async function getAllTasks() {
       const postItColour = getColor(type);
       console.log(`Card ID: ${_id}, Title: ${title}, Description: ${description}, Due Date: ${duedate}, Type: ${type}`);
 
-      const dueDateValue = duedate ? new Date(duedate) : null;
+      const dueDateValue = duedate ? new Date(Number(duedate)) : null;
       const dueDateString = dueDateValue && !isNaN(dueDateValue.getTime())
         ? dueDateValue.toISOString().split('T')[0]
         : 'Sin fecha';
-
+ 
       // Crea un elemento 'task-sticker' para cada tarjeta
       const dragDiv = document.createElement('div');
       dragDiv.classList.add('drag');
