@@ -100,26 +100,21 @@ const resolvers = {
     
     editCard: async (
       _, 
-      { cardId, title, description, duedate, type, color, projects_id },
-      { userId }
+      { cardId, title, description, duedate,  color, }
+      
       ) => {
       try {
-        // Verifica si el usuario está autenticado
-        if (!userId) {
-          throw new Error('No autorizado');
-        }
-
-        // Encuentra y actualiza la tarjeta con los campos proporcionados
-        const updatedCard = await Card.findByIdAndUpdate(
-          cardId, // Primer parámetro debe ser el cardId
-          {
+         // Encuentra y actualiza la tarjeta con los campos proporcionados
+         const cardId = this.getAttribute('card-id');
+         const updatedCard = await Card.findByIdAndUpdate(
+        
+          
+          { _id: id,
             ...(title && { title }),
             ...(description && { description }),
             ...(duedate && { duedate }),
-            ...(type && { type }),
             ...(color && { color }),
-            ...(projects_id && { projects_id }),
-          },
+            },
           { new: true } // crea el documento actualizado
         );
 

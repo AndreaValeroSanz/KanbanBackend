@@ -27,7 +27,7 @@ class TaskStickerController extends HTMLElement {
         <task-sticker data-key="${dataKey}" 
           title="${title || this.getAttribute('title')}" 
           description="${description || this.getAttribute('description')}" 
-          postItColour="${this.getAttribute('postItColour')}" 
+          color="${this.getAttribute('color')}" 
           dueDate="${dueDate || this.getAttribute('dueDate')}"
           workarea="${this.expanded ? (workarea || 'Front,Back,Server,Testing') : ''}">
         </task-sticker>

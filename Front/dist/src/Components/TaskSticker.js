@@ -14,7 +14,7 @@ class TaskSticker extends HTMLElement {
     return {
       title: this.getAttribute('title') || 'Untitled Task',
       description: this.getAttribute('description') || 'Please, remember to write a task description.',
-      postItColour: this.getAttribute('postItColour'),
+      color: this.getAttribute('color'),
       dueDate: this.getAttribute('dueDate') || 'No date assigned.',
       workarea: this.getAttribute('workarea') || '',
       dataKey: this.getAttribute('data-key') || `task-${Math.floor(Math.random() * 10000)}`,
@@ -49,7 +49,7 @@ class TaskSticker extends HTMLElement {
   }
 
   // Aquí se crea el HTML de la tarjeta
-  getCardHTML({ title, dueDate, postItColour, modalId }) {
+  getCardHTML({ title, dueDate, color, modalId }) {
     return  `
     <style>
         .card-margin {
@@ -130,25 +130,25 @@ class TaskSticker extends HTMLElement {
     <div class="container ">
         <div class="row  ">
             <div class="g-0 ">
-                <div class="card card-margin  background-${postItColour}">
+                <div class="card card-margin  background-${color}">
                     <div class="card-header no-border d-flex justify-content-end mt-2  ">
                       <div >
-                      <svg class="background-${postItColour}" width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <svg class="background-${color}" width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path transform ="rotate(12,12,12)" d="M12 1.75C9.97274 1.75 7.99103 2.35115 6.30542 3.47743C4.61982 4.60372 3.30601 6.20454 2.53022 8.07748C1.75442 9.95043 1.55147 12.0114 1.94696 13.9997C2.34246 15.988 3.31865 17.8143 4.75214 19.2478C6.18563 20.6813 8.012 21.6575 10.0003 22.053C11.9886 22.4485 14.0495 22.2456 15.9225 21.4698C17.7954 20.694 19.3963 19.3802 20.5226 17.6946C21.6489 16.009 22.25 14.0273 22.25 12C22.2474 9.28234 21.1666 6.67674 19.2449 4.75507C17.3233 2.83339 14.7177 1.75265 12 1.75ZM11 6.75C11 6.48478 11.1054 6.23043 11.2929 6.04289C11.4804 5.85536 11.7348 5.75 12 5.75C12.2652 5.75 12.5196 5.85536 12.7071 6.04289C12.8946 6.23043 13 6.48478 13 6.75V13.08C13 13.3452 12.8946 13.5996 12.7071 13.7871C12.5196 13.9746 12.2652 14.08 12 14.08C11.7348 14.08 11.4804 13.9746 11.2929 13.7871C11.1054 13.5996 11 13.3452 11 13.08V6.75ZM12 17.83C11.7528 17.83 11.5111 17.7567 11.3055 17.6193C11.1 17.482 10.9398 17.2868 10.8452 17.0583C10.7505 16.8299 10.7258 16.5786 10.7741 16.3361C10.8223 16.0937 10.9413 15.8709 11.1162 15.6961C11.291 15.5213 11.5137 15.4022 11.7562 15.354C11.9986 15.3058 12.2499 15.3305 12.4783 15.4251C12.7067 15.5197 12.902 15.68 13.0394 15.8855C13.1767 16.0911 13.25 16.3328 13.25 16.58C13.2475 16.902 13.1198 17.2104 12.894 17.44C12.6682 17.6695 12.3619 17.8022 12.04 17.81L12 17.83Z" fill="red" />
                       </svg>
     
                       </div>
                     </div>
-                    <div class="card-body d-flex pt-0 g-0 p-0 mx-2 row background-${postItColour}">
-                      <h5 class="card-title background-${postItColour} text-center" id="card-title">${title}</h5>
+                    <div class="card-body d-flex pt-0 g-0 p-0 mx-2 row background-${color}">
+                      <h5 class="card-title background-${color} text-center" id="card-title">${title}</h5>
                                    
-                                <div class="background-${postItColour} d-flex  align-self-center ">
-                                    <span class=" d-flex align-self-end background-${postItColour}">${dueDate}</span>
+                                <div class="background-${color} d-flex  align-self-center ">
+                                    <span class=" d-flex align-self-end background-${color}">${dueDate}</span>
                               
     
                                    
-                                <div class="btn-task background-${postItColour} d-flex justify-content-end pe-1 pb-1" role="group" aria-label="Collaborators icons">
-                                            <button type="button" class="btn background-${postItColour}">
+                                <div class="btn-task background-${color} d-flex justify-content-end pe-1 pb-1" role="group" aria-label="Collaborators icons">
+                                            <button type="button" class="btn background-${color}">
                                                 <img src="https://placehold.co/40x40"></img>
                                         </button>
                             </div>
@@ -165,11 +165,11 @@ class TaskSticker extends HTMLElement {
         `;
   }
 
-  getModalHTML({ title, description, dueDate, modalId, postItColour }, selectedWorkareas) {
+  getModalHTML({ title, description, dueDate, modalId, color }, selectedWorkareas) {
     return `
       <div class="modal fade" id="${modalId}" tabindex="-1" aria-labelledby="${modalId}Label" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content background-${postItColour}">
+          <div class="modal-content background-${color}">
             <div class="modal-header">
               <input type="text" class="form-control" id="editTitle-${modalId}" placeholder="Task Title" value="${title}">
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -222,6 +222,27 @@ class TaskSticker extends HTMLElement {
         }
         this.deleteTask(dataKey, cardId);
       });
+
+        // aquí mira tú yo que sé, buena suerte.
+      const saveButton = modal.querySelector('.save-task');
+      if (saveButton) {
+          saveButton.addEventListener('click', () => {
+              const cardId = this.getAttribute('card-id');
+              if (!cardId || cardId === "null" || cardId === "undefined") {
+                  console.error("Invalid cardId:", cardId);
+                  alert("No se puede guardar la tarea: ID de la tarjeta no válido.");
+                  return;
+              }
+
+              // Llamada a la función saveTask
+              this.saveTask(dataKey, cardId, modal);
+          });
+        } else {
+            console.error("Save button not found in the modal.");
+        } 
+
+        // fin del buena suerte.
+
     } else {
       console.error(`Modal or card element not found. Modal ID: ${modalId}`);
     }
@@ -277,6 +298,73 @@ class TaskSticker extends HTMLElement {
       alert(`Error: ${error.message}`);
     }
   }
+
+ /* console.log(typeof(cardId));
+  console.log(typeof(title));
+  console.log(typeof(description));
+  console.log(typeof(dueDate));
+  console.log(typeof(color));
+  console.log(typeof(user_id));
+  console.log(typeof(project_id));*/
+
+  
+  async saveTask(dataKey, cardId, modal) {
+    const token = localStorage.getItem('token');
+
+    // Extraer los datos del modal (por ejemplo, el título y la descripción de la tarea)
+    const title = modal.querySelector('.task-title').value;
+    const description = modal.querySelector('.task-description').value;
+
+    try {
+        // Realizar la solicitud para actualizar la tarea en la base de datos
+        const query = `
+            mutation {
+                 updateCard(id: "${cardId}", title: "${title}", description: "${description}", dueDate: "${dueDate}", color: "${color}", user_id: "${user_id}",projects_id: "${projects_id}",}) {
+                    _id
+                    title
+                    description
+                    dueDate
+                    color
+                    user_id
+                    projects_id
+                    
+                }
+            }
+        `;
+       
+        //goodnight
+        
+
+        const response = await fetch('http://localhost:3000/graphql', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify({ query }),
+        });
+
+        const result = await response.json();
+
+        if (result.errors) {
+            throw new Error(result.errors[0].message);
+        }
+
+        // Actualizar los datos en el DOM
+        this.querySelector('.card-title').textContent = title;
+        this.querySelector('.card-description').textContent = description;
+
+        // Opción para cerrar el modal después de guardar
+        const modalInstance = bootstrap.Modal.getInstance(modal);
+        modalInstance.hide();
+
+        alert('Task updated successfully!');
+    } catch (error) {
+        console.error('Error updating task:', error);
+        alert(`Error: ${error.message}`);
+    }
+}
+
 
 }
 

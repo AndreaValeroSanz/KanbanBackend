@@ -69,7 +69,7 @@ async function getAllTasks() {
         return;
       }
 
-      const postItColour = getColor(type);
+      const color = getColor(type);
       console.log(`Card ID: ${_id}, Title: ${title}, Description: ${description}, Due Date: ${duedate}, Type: ${type}`);
 
       let dueDateString = 'Sin fecha'; // Valor por defecto
@@ -94,7 +94,7 @@ async function getAllTasks() {
       const taskSticker = document.createElement('task-sticker');
       taskSticker.setAttribute('title', title);
       taskSticker.setAttribute('description', description);
-      taskSticker.setAttribute('postItColour', postItColour);
+      taskSticker.setAttribute('color', color);
       taskSticker.setAttribute('dueDate', dueDateString);
       taskSticker.setAttribute('card-id', _id); // Asigna el 'card-id' correctamente
 
