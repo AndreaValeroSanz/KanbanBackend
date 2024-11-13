@@ -7,8 +7,21 @@ window.dragInit = function () {
         document.querySelector('#done [slot="content"]')
     ];
 
-    // Add placeholders for empty columns
-    columns.forEach(column => updatePlaceholder(column));
+    // Map column IDs to the corresponding types
+    const columnTypeMap = {
+        'on-hold': 'on-hold',
+        'not-started': 'not-started',
+        'in-progress': 'in-progress',
+        'review-ready': 'review-ready',
+        'done': 'done'
+    };
+
+    // Add placeholders for empty columns initially
+    columns.forEach(column => {
+        if (column) {
+            updatePlaceholder(column);
+        }
+    });
 
     // Initialize drag and drop on all draggable items
     const draggableItems = document.querySelectorAll('.drag');
@@ -20,20 +33,19 @@ window.dragInit = function () {
 
     // Set up dragover and drop events for columns
     columns.forEach(column => {
-        column.addEventListener('dragover', handleDragOver);
-        column.addEventListener('drop', handleDrop);
+        if (column) {
+            column.addEventListener('dragover', handleDragOver);
+            column.addEventListener('drop', handleDrop);
+        }
     });
 
-    // Functions to handle drag-and-drop events
     let draggedItem = null;
     let sourceColumn = null;
 
     function handleDragStart(e) {
         draggedItem = e.target;
         sourceColumn = draggedItem.parentNode;
-
-        // Temporarily remove the item and update placeholder for source column
-        updatePlaceholder(sourceColumn);
+        updatePlaceholder(sourceColumn); // Check for placeholders in the source column
         e.dataTransfer.effectAllowed = "move";
         e.dataTransfer.setData("text/plain", e.target.id);
     }
@@ -41,40 +53,98 @@ window.dragInit = function () {
     function handleDragEnd(e) {
         draggedItem = null;
         sourceColumn = null;
+        window.location.reload();
     }
 
     function handleDragOver(e) {
         e.preventDefault();
     }
 
-    function handleDrop(e) {
+    async function handleDrop(e) {
         e.preventDefault();
         const targetColumn = e.currentTarget;
 
         if (draggedItem) {
-            // Append the item to the target column
             targetColumn.appendChild(draggedItem);
 
-            // Update placeholders for both source and target columns
-            updatePlaceholder(sourceColumn);
+            // Use the targetColumn's parent element to get the ID
+            const columnId = targetColumn.closest('[id]').id; // Get the closest ancestor with an ID
+            const newType = columnTypeMap[columnId];
+
+            if (newType) {
+                const cardId = draggedItem.querySelector('task-sticker').getAttribute('card-id');
+                console.log(`Attempting to update card ID: ${cardId} to type: ${newType}`);
+
+                try {
+                    await updateCardType(cardId, newType);
+                    console.log(`Successfully updated card type for ID: ${cardId} to ${newType}`);
+                } catch (error) {
+                    console.error(`Failed to update card type for ID: ${cardId}`, error);
+                }
+            } else {
+                console.error(`Could not determine new type for target column with ID: ${columnId}`);
+            }
+
+            // Update placeholders for both the source and target columns
+            if (sourceColumn) {
+                updatePlaceholder(sourceColumn);
+            }
             updatePlaceholder(targetColumn);
         }
     }
 
-    // Function to add/remove placeholder based on column content
-    function updatePlaceholder(column) {
-        const placeholder = column.querySelector('.placeholder');
-        const hasItems = column.querySelector('.drag');
+    async function updateCardType(cardId, newType) {
+        const token = localStorage.getItem('token');
+        const mutation = `
+            mutation {
+                updateCardType(id: "${cardId}", type: "${newType}") {
+                    _id
+                    type
+                }
+            }
+        `;
 
-        if (!hasItems && !placeholder) {
-            // Add placeholder if no items exist
-            const newPlaceholder = document.createElement('div');
-            newPlaceholder.classList.add('placeholder');
-            newPlaceholder.innerHTML = '<p>Drop items here</p>';
-            column.appendChild(newPlaceholder);
-        } else if (hasItems && placeholder) {
-            // Remove placeholder if items are present
+        try {
+            const response = await fetch('http://localhost:3000/graphql', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ query: mutation }),
+            });
+
+            if (!response.ok) {
+                throw new Error(`Error updating card type: ${response.status}`);
+            }
+
+            const result = await response.json();
+            if (result.errors) {
+                throw new Error(result.errors[0].message);
+            }
+
+            return result.data.updateCardType;
+        } catch (error) {
+            console.error('Error updating card type:', error);
+            throw error;
+        }
+    }
+
+    function updatePlaceholder(column) {
+        if (!column) return; // Guard clause to ensure column is valid
+
+        const hasItems = column.querySelector('.drag');
+        let placeholder = column.querySelector('.placeholder');
+
+        if (hasItems && placeholder) {
+            // If there are items and a placeholder exists, remove the placeholder
             column.removeChild(placeholder);
+        } else if (!hasItems && !placeholder) {
+            // If there are no items and no placeholder, add the placeholder
+            placeholder = document.createElement('div');
+            placeholder.classList.add('placeholder');
+            placeholder.innerHTML = '<p>Drop items here</p>';
+            column.appendChild(placeholder);
         }
     }
 };

@@ -37,18 +37,17 @@ const typeDefs = gql`
       color: String
       projects_id: ID
     ): Card!
-    deleteCard(id: ID!): Card! # Nueva mutación para borrar una tarjeta
-
+    deleteCard(id: ID!): Card!
     editCard(
-      id_: ID!
+      cardId: ID!
       title: String
       description: String
       duedate: String
       type: String
       color: String
-      user_id: ID
       projects_id: ID
     ): Card
+    updateCardType(id: ID!, type: String!): Card! # New mutation for updating card type
   }
 `;
 
