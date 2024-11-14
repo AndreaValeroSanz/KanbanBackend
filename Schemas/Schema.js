@@ -1,6 +1,7 @@
 import { gql } from 'apollo-server-express';
 
 const typeDefs = gql`
+
   type Card {
     _id: ID!
     title: String!
@@ -11,7 +12,13 @@ const typeDefs = gql`
     user_id: ID!
     projects_id: ID!
   }
-
+type editCard {
+  _id: ID!
+  title: String!
+  description: String!
+  duedate: String!  
+  color: String
+}
   type User {
     _id: ID!
     email: String!
@@ -35,18 +42,21 @@ const typeDefs = gql`
       duedate: String!
       type: String
       color: String
-      projects_id: ID
+    
     ): Card!
-    deleteCard(id: ID!): Card! # Nueva mutación para borrar una tarjeta
-
-    editCard(
+    deleteCard(id: ID!): Card!
+  editCard(
       id: ID!
       title: String
       description: String
       duedate: String
       color: String
       ): Card!
+    updateCardType(id: ID!): Card! # New mutation for updating card type
   }
+
+
+
 `;
 
 export default typeDefs;

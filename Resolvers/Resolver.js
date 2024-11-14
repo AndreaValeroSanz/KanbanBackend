@@ -1,7 +1,8 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/user.js';
-import Card from '../models/card.js'; // Asegúrate de tener el modelo Card
+import Card from '../models/card.js'; // Ensure you have the Card model
+
 const SECRET_KEY = "gommit";
 
 const resolvers = {
@@ -12,7 +13,6 @@ const resolvers = {
           throw new Error('No autorizado');
         }
 
-        // Filtra las cards del usuario autenticado
         const cards = await Card.find({ user_id: userId });
         return cards;
       } catch (error) {
@@ -57,22 +57,19 @@ const resolvers = {
           throw new Error('No autorizado');
         }
 
-        // Usar la ID por defecto si no se proporciona projects_id
         const defaultProjectId = "67224b9d9040a876aa6e7013";
         const projectIdToUse = projects_id || defaultProjectId;
 
-        // Crea una nueva tarjeta
         const newCard = new Card({
           title,
           description,
           duedate,
           type,
           color,
-          user_id: userId, // Asocia la tarjeta al usuario autenticado
+          user_id: userId,
           projects_id: projectIdToUse,
         });
 
-        // Guarda la tarjeta en la base de datos
         const savedCard = await newCard.save();
         return savedCard;
       } catch (error) {
@@ -85,9 +82,7 @@ const resolvers = {
           throw new Error('No autorizado');
         }
 
-        // Buscar y eliminar la tarjeta que pertenece al usuario autenticado
         const deletedCard = await Card.findOneAndDelete({ _id: id, user_id: userId });
-
         if (!deletedCard) {
           throw new Error('Tarjeta no encontrada o no autorizada para eliminar');
         }
@@ -97,38 +92,62 @@ const resolvers = {
         throw new Error(error.message);
       }
     },
-    
     editCard: async (
       _, 
-      { cardId, title, description, duedate,  color, }
-      
-      ) => {
+      { id, title, description, duedate,  color },
+      { userId }
+    ) => {
       try {
-         // Encuentra y actualiza la tarjeta con los campos proporcionados
-         const cardId = this.getAttribute('card-id');
-         const updatedCard = await Card.findByIdAndUpdate(
-        
-          
-          { _id: id,
+        if (!userId) {
+          throw new Error('No autorizado');
+        }
+
+      
+        const updatedCard = await Card.findByIdAndUpdate(
+          id,
+          {
             ...(title && { title }),
             ...(description && { description }),
             ...(duedate && { duedate }),
+            
             ...(color && { color }),
-            },
-          { new: true } // crea el documento actualizado
+           
+          },
+          { new: true }
         );
 
-        // Verifica si la tarjeta fue encontrada
         if (!updatedCard) {
           throw new Error('Tarjeta no encontrada');
         }
 
-        return updatedCard; // devuelve la tarjeta actualizada
+        return updatedCard;
       } catch (error) {
         throw new Error(`Error al editar la tarjeta: ${error.message}`);
       }
     },
+    updateCardType: async (_, { id, type }, { userId }) => {
+      try {
+        if (!userId) {
+          throw new Error('No autorizado');
+        }
+
+        // Find the card and make sure it belongs to the current user
+        const card = await Card.findOne({ _id: id, user_id: userId });
+        if (!card) {
+          throw new Error('Tarjeta no encontrada o no autorizada');
+        }
+
+        // Update the type
+        card.type = type;
+        const updatedCard = await card.save();
+
+        return updatedCard;
+      } catch (error) {
+        throw new Error(`Error al actualizar el tipo de tarjeta: ${error.message}`);
+      }
+    },
   },
 };
+
 
 export default resolvers;

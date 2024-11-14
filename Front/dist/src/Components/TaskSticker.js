@@ -231,11 +231,11 @@ class TaskSticker extends HTMLElement {
               if (!cardId || cardId === "null" || cardId === "undefined") {
                   console.error("Invalid cardId:", cardId);
                   alert("No se puede guardar la tarea: ID de la tarjeta no válido.");
-                  return;
+                  
               }
 
               // Llamada a la función saveTask
-              this.saveTask(dataKey, cardId, modal);
+              this.saveTask(cardId, modal);
           });
         } else {
             console.error("Save button not found in the modal.");
@@ -308,40 +308,38 @@ class TaskSticker extends HTMLElement {
   console.log(typeof(project_id));*/
 
   
-  async saveTask(dataKey, cardId, modal) {
-    const token = localStorage.getItem('token');
-
-    // Extraer los datos del modal (por ejemplo, el título y la descripción de la tarea)
-    const title = modal.querySelector('.task-title').value;
-    const description = modal.querySelector('.task-description').value;
+  async saveTask(id, title, description, duedate,  color) {
+    const token = localStorage.getItem('token'); // Asegúrate de que el token esté guardado en el localStorage
 
     try {
-        // Realizar la solicitud para actualizar la tarea en la base de datos
-        const query = `
-            mutation {
-                 updateCard(id: "${cardId}", title: "${title}", description: "${description}", dueDate: "${dueDate}", color: "${color}", user_id: "${user_id}",projects_id: "${projects_id}",}) {
-                    _id
-                    title
-                    description
-                    dueDate
-                    color
-                    user_id
-                    projects_id
-                    
-                }
-            }
-        `;
-       
-        //goodnight
-        
-
         const response = await fetch('http://localhost:3000/graphql', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
+                'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify({ query }),
+            body: JSON.stringify({
+                query: `
+                    mutation {
+                        editCard(
+                            id: "${id}",
+                            title: "${title}",
+                            description: "${description}",
+                            duedate: "${duedate}",                            
+                            color: "${color}"
+                            
+                        ) {
+                            _id
+                            title
+                            description
+                            duedate
+                            type
+                            color
+                            projects_id
+                        }
+                    }
+                `
+            })
         });
 
         const result = await response.json();
@@ -350,20 +348,16 @@ class TaskSticker extends HTMLElement {
             throw new Error(result.errors[0].message);
         }
 
-        // Actualizar los datos en el DOM
-        this.querySelector('.card-title').textContent = title;
-        this.querySelector('.card-description').textContent = description;
-
-        // Opción para cerrar el modal después de guardar
-        const modalInstance = bootstrap.Modal.getInstance(modal);
-        modalInstance.hide();
-
-        alert('Task updated successfully!');
+        // Devuelve los datos de la tarjeta actualizada
+        return result.data.editCard;
     } catch (error) {
-        console.error('Error updating task:', error);
+        console.error('Error al actualizar la tarjeta:', error.message);
         alert(`Error: ${error.message}`);
     }
 }
+
+
+
 
 
 }
