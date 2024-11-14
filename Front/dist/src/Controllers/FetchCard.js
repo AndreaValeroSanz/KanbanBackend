@@ -5,7 +5,7 @@ function convertToISODate(dateString) {
   const parts = dateString.split('/'); // Suponemos que el formato es "DD/MM/YYYY"
   if (parts.length === 3) {
     // Convertir de "DD/MM/YYYY" a "YYYY-MM-DD"
-    return `${parts[2]}-${parts[1]}-${parts[0]}`;
+    return `${parts[2]}/${parts[1]}/${parts[0]}`;
   }
   return null; // Si el formato no es válido, devolvemos null
 }
@@ -71,7 +71,7 @@ async function getAllTasks() {
 
       const color = getColor(type);
      // console.log(`Card ID: ${_id}, Title: ${title}, Description: ${description}, Due Date: ${duedate}, Type: ${type}`);
-     
+      console.log(new Date(duedate));
 
       let dueDateString = 'Sin fecha'; // Valor por defecto
 
@@ -82,8 +82,13 @@ async function getAllTasks() {
       }
       // Si duedate es una cadena (esperamos que sea "DD/MM/YYYY")
       else if (typeof duedate === 'string') {
-        dueDateString = new Date(duedate).toISOString().split('T')[0];
-        
+        const formattedDate = convertToISODate(duedate); // Convertir "DD/MM/YYYY" a "YYYY-MM-DD"
+        if (formattedDate) {
+          const dueDateValue = new Date(formattedDate); // Crear un objeto Date con la fecha reformateada
+          if (!isNaN(dueDateValue.getTime())) {
+            dueDateString = dueDateValue.toISOString().split('T')[0]; // Obtener solo la parte de la fecha
+          }
+        }
       }
 
       // Crea un elemento 'task-sticker' para cada tarjeta

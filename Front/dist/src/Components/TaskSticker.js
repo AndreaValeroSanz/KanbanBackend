@@ -357,14 +357,17 @@ class TaskSticker extends HTMLElement {
       
       // Asegúrate de que los elementos existen antes de intentar actualizarlos
       if (cardTitle) cardTitle.textContent = title;      
-      if (cardDueDate) cardDueDate.textContent = dueDateEdit ? new Date(dueDateEdit).toLocaleDateString() : 'Sin fecha asignada';
-  
+      if (cardDueDate) cardDueDate.textContent = dueDateEdit ? new Date(dueDateEdit).toISOString().split('T')[0] : 'Sin fecha asignada';
+
+        
+
       // Cambia el color de la card si fue modificado
       const cardElement = this.querySelector('.card');
       if (cardElement) {
         cardElement.className = `card card-margin background-${color}`;
       }
       location.reload();
+      
       return result.data.editCard;
       
     } catch (error) {
