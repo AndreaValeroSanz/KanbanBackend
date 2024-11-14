@@ -224,22 +224,21 @@ class TaskSticker extends HTMLElement {
       });
 
         // aquí mira tú yo que sé, buena suerte.
-      const saveButton = modal.querySelector('.save-task');
-      if (saveButton) {
+        const saveButton = modal.querySelector('.save-task');
+        if (saveButton) {
           saveButton.addEventListener('click', () => {
-              const cardId = this.getAttribute('card-id');
-              if (!cardId || cardId === "null" || cardId === "undefined") {
-                  console.error("Invalid cardId:", cardId);
-                  alert("No se puede guardar la tarea: ID de la tarjeta no válido.");
-                  
-              }
-
-              // Llamada a la función saveTask
-              this.saveTask(cardId, modal);
+            const cardId = this.getAttribute('card-id');
+            if (!cardId || cardId === "null" || cardId === "undefined") {
+              console.error("Invalid cardId:", cardId);
+              alert("Cannot save the task: invalid card ID.");
+              return;
+            }
+            this.saveTask(cardId, modal);
           });
         } else {
-            console.error("Save button not found in the modal.");
-        } 
+          console.error("Save button not found in the modal.");
+        }
+        
 
         // fin del buena suerte.
 
@@ -308,55 +307,68 @@ class TaskSticker extends HTMLElement {
   console.log(typeof(project_id));*/
 
   
-  async saveTask(id, title, description, duedate,  color) {
-    const token = localStorage.getItem('token'); // Asegúrate de que el token esté guardado en el localStorage
-
-    try {
-        const response = await fetch('http://localhost:3000/graphql', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({
-                query: `
-                    mutation {
-                        editCard(
-                            id: "${id}",
-                            title: "${title}",
-                            description: "${description}",
-                            duedate: "${duedate}",                            
-                            color: "${color}"
-                            
-                        ) {
-                            _id
-                            title
-                            description
-                            duedate
-                            type
-                            color
-                            projects_id
-                        }
-                    }
-                `
-            })
-        });
-
-        const result = await response.json();
-
-        if (result.errors) {
-            throw new Error(result.errors[0].message);
-        }
-
-        // Devuelve los datos de la tarjeta actualizada
-        return result.data.editCard;
-    } catch (error) {
-        console.error('Error al actualizar la tarjeta:', error.message);
-        alert(`Error: ${error.message}`);
+  async saveTask(cardId, modal) {
+    const token = localStorage.getItem('token');
+    const titleInput = modal.querySelector(`#editTitle-${modal.id}`);
+    const descriptionInput = modal.querySelector(`#editDescription-${modal.id}`);
+    const dueDateInput = modal.querySelector(`#editDueDate-${modal.id}`);
+    
+    // Verifica si los inputs existen antes de obtener sus valores
+    const title = titleInput ? titleInput.value : null;
+    const description = descriptionInput ? descriptionInput.value : null;
+    const dueDate = dueDateInput ? dueDateInput.value : null;
+    const color = this.getAttribute('color');
+  
+    if (!title || !description) {
+      alert('El título y la descripción son obligatorios');
+      return;
     }
-}
-
-
+  
+    try {
+      const query = `
+        mutation {
+          editCard(id: "${cardId}", title: "${title}", description: "${description}", duedate: "${dueDate}", color: "${color}") {
+            _id
+            title
+            description
+            duedate
+            color
+          }
+        }
+      `;
+      const response = await fetch('http://localhost:3000/graphql', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({ query }),
+      });
+  
+      const result = await response.json();
+      if (result.errors) throw new Error(result.errors[0].message);
+  
+      alert('¡Tarea guardada exitosamente!');
+  
+      // Aquí actualizamos la card en el DOM
+      const cardTitle = this.querySelector('.card-title');
+      const cardDueDate = this.querySelector('.card-body span');
+      
+      // Asegúrate de que los elementos existen antes de intentar actualizarlos
+      if (cardTitle) cardTitle.textContent = title;
+      if (cardDueDate) cardDueDate.textContent = dueDate ? new Date(dueDate).toLocaleDateString() : 'Sin fecha asignada';
+  
+      // Cambia el color de la card si fue modificado
+      const cardElement = this.querySelector('.card');
+      if (cardElement) {
+        cardElement.className = `card card-margin background-${color}`;
+      }
+  
+      return result.data.editCard;
+    } catch (error) {
+      console.error('Error al guardar la tarea:', error.message);
+      alert(`Error: ${error.message}`);
+    }
+  }
+  
+  
 
 
 
