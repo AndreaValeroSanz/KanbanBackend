@@ -42,8 +42,8 @@ type editCard {
       duedate: String!
       type: String
       color: String
-    
-    ): Card!
+      projects_id:ID!
+        ): Card!
     deleteCard(id: ID!): Card!
   editCard(
       id: ID!
