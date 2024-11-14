@@ -1,7 +1,10 @@
 class TaskSticker extends HTMLElement {
+
+
   constructor() {
     super();
   }
+  
 
   connectedCallback() {
     const attributes = this.getAttributes();
@@ -316,18 +319,19 @@ class TaskSticker extends HTMLElement {
     // Verifica si los inputs existen antes de obtener sus valores
     const title = titleInput ? titleInput.value : null;
     const description = descriptionInput ? descriptionInput.value : null;
-    const dueDate = dueDateInput ? dueDateInput.value : null;
+    const dueDateEdit = dueDateInput ? dueDateInput.value : null;
     const color = this.getAttribute('color');
   
     if (!title || !description) {
       alert('El título y la descripción son obligatorios');
       return;
     }
-  
+    
+   
     try {
       const query = `
         mutation {
-          editCard(id: "${cardId}", title: "${title}", description: "${description}", duedate: "${dueDate}", color: "${color}") {
+          editCard(id: "${cardId}", title: "${title}", description: "${description}", duedate: "${dueDateEdit}", color: "${color}") {
             _id
             title
             description
@@ -348,24 +352,26 @@ class TaskSticker extends HTMLElement {
       alert('¡Tarea guardada exitosamente!');
   
       // Aquí actualizamos la card en el DOM
-      const cardTitle = this.querySelector('.card-title');
+      const cardTitle = this.querySelector('.card-title');     
       const cardDueDate = this.querySelector('.card-body span');
       
       // Asegúrate de que los elementos existen antes de intentar actualizarlos
-      if (cardTitle) cardTitle.textContent = title;
-      if (cardDueDate) cardDueDate.textContent = dueDate ? new Date(dueDate).toLocaleDateString() : 'Sin fecha asignada';
+      if (cardTitle) cardTitle.textContent = title;      
+      if (cardDueDate) cardDueDate.textContent = dueDateEdit ? new Date(dueDateEdit).toLocaleDateString() : 'Sin fecha asignada';
   
       // Cambia el color de la card si fue modificado
       const cardElement = this.querySelector('.card');
       if (cardElement) {
         cardElement.className = `card card-margin background-${color}`;
       }
-  
+      location.reload();
       return result.data.editCard;
+      
     } catch (error) {
       console.error('Error al guardar la tarea:', error.message);
       alert(`Error: ${error.message}`);
     }
+
   }
   
   
