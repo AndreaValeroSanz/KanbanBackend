@@ -19,7 +19,7 @@ class TaskColumn extends HTMLElement {
           padding: 10px;
           width: 28vh;
           min-height: 300px;
-          height: 70vh;
+          height: 75vh;
           border: 1px solid #dbdbdb;
           box-sizing: border-box;
         }
