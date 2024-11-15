@@ -195,7 +195,7 @@ class TaskSticker extends HTMLElement {
   }
 
    getWorkareaOptions(selectedWorkareas) {
-    const workareas = ['Front', 'Back', 'Server', 'Testing'];
+    const workareas = ['Testing', 'Server', 'Back', 'Front'];
     return workareas.map(area => `
       <label>
         <input type="checkbox" name="workarea" class="workarea-option" value="${area}" ${selectedWorkareas.includes(area) ? 'checked' : ''}>
