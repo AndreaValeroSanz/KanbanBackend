@@ -5,7 +5,7 @@ class TaskColumn extends HTMLElement {
   connectedCallback() {
     const title = this.getAttribute("title");
     const taskIcon = this.getAttribute("taskIcon");
-  
+    const columnId = this.getAttribute("id");
     // Get the slotted content
     const slotContent = this.querySelector('[slot="content"]');
   
@@ -83,7 +83,7 @@ class TaskColumn extends HTMLElement {
   
     // Event listener for modal button
     this.querySelector('#openModalButton').addEventListener('click', () => {
-      const event = new CustomEvent('openTaskModal', { detail: { columnTitle: title } });
+      const event = new CustomEvent('openTaskModal', { detail: { columnId: columnId } });
       window.dispatchEvent(event);
    });
    

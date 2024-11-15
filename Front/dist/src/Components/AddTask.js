@@ -1,10 +1,18 @@
 class AddTask extends HTMLElement {
   constructor() {
     super();
+    this.columnId = null; // Initialize columnId as null
   }
 
   connectedCallback() {
-    window.addEventListener('openTaskModal', () => {
+    window.addEventListener('openTaskModal', (event) => {
+      // Extract the `columnId` from the event detail
+      const { columnId } = event.detail;
+      this.columnId = columnId; // Store columnId as a class property
+
+      console.log('Column id:', columnId);
+
+      // Show the modal
       const modal = new bootstrap.Modal(this.querySelector('#exampleModal'), {});
       modal.show();
     });
@@ -106,8 +114,6 @@ class AddTask extends HTMLElement {
                     </label>
                   </div>
                 </div>
-
-               
               </form>
             </div>
             <div class="modal-footer">
@@ -117,7 +123,6 @@ class AddTask extends HTMLElement {
           </div>
         </div>
       </div>
-    
     `;
 
     // Add event listener to the "Create Task" button
@@ -129,38 +134,36 @@ class AddTask extends HTMLElement {
     const description = this.querySelector('#task-desc').value;
     const duedate = this.querySelector('#task-deadline').value;
     const workarea = this.querySelector('input[name="workarea"]:checked')?.value;
-  
-    console.log(title, description, duedate, workarea);
-    
-    // Valor por defecto para `type`
-    const type = "on-hold";
-  
+    const columnId = this.columnId; // Access the stored columnId
+
+    console.log(title, description, duedate, workarea, columnId);
+
     const token = localStorage.getItem('token');
-  
-    // Asegúrate de que todos los campos obligatorios estén llenos
+
+    // Ensure all required fields are filled
     if (!title || !duedate || !workarea) {
       alert('Please fill in all required fields.');
       return;
     }
-  
-    // Define la ID del proyecto por defecto
+
+    // Define the default project ID
     const defaultProjectId = "67224b9d9040a876aa6e7013";
-  
-    //conversor duadte a foramto dd/mm/aaaa
+
+    // Convert due date to dd/mm/yyyy format
     const dateObj = new Date(duedate);
-    const day = String(dateObj.getDate()).padStart(2,"0");
-    const month = String(dateObj.getMonth()+1).padStart(2,"0");
+    const day = String(dateObj.getDate()).padStart(2, "0");
+    const month = String(dateObj.getMonth() + 1).padStart(2, "0");
     const year = dateObj.getFullYear();
     const formattedDueDate = `${day}/${month}/${year}`;
 
-    // Construye la consulta GraphQL
+    // Build the GraphQL query
     const query = `
       mutation {
         createCard(
           title: "${title}",
           description: "${description}",
           duedate: "${formattedDueDate}",
-          type: "${type}",
+          type: "${columnId}",
           color: "${workarea}", 
           projects_id: "${defaultProjectId}"
         ) {
@@ -175,7 +178,7 @@ class AddTask extends HTMLElement {
         }
       }
     `;
-  
+
     try {
       const response = await fetch('http://localhost:3000/graphql', {
         method: 'POST',
@@ -185,13 +188,13 @@ class AddTask extends HTMLElement {
         },
         body: JSON.stringify({ query }),
       });
-  
+
       const result = await response.json();
-  
+
       if (result.errors) {
         throw new Error(result.errors[0].message);
       }
-  
+
       alert('Task created successfully!');
       window.location.reload(); // Reload the page or update the UI as needed
     } catch (error) {
@@ -199,7 +202,6 @@ class AddTask extends HTMLElement {
       alert(`Error: ${error.message}`);
     }
   }
-
 }
 
 // Define custom element
