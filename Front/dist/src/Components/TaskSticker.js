@@ -11,6 +11,7 @@ class TaskSticker extends HTMLElement {
     this.setUniqueIdentifiers(attributes);
     this.render(attributes);
     this.addEventListeners(attributes.modalId, attributes.dataKey);
+    
   }
 
   getAttributes() {
@@ -148,14 +149,7 @@ class TaskSticker extends HTMLElement {
                       <h5 class="card-title background-${color} text-center" id="card-title">${title}</h5>
                                    
                                 <div class="background-${color} d-flex  align-self-center ">
-                                    <span class=" d-flex align-self-end background-${color}">${dueDate}</span>
-                              
-    
-                                   
-                              
-                    
-                        
-                            
+                                    <span class=" d-flex align-self-end background-${color}">${dueDate}</span>               
                         </div>
                              
                 </div>
@@ -200,12 +194,16 @@ class TaskSticker extends HTMLElement {
     `;
   }
 
-  getWorkareaOptions(selectedWorkareas) {
+   getWorkareaOptions(selectedWorkareas) {
     const workareas = ['Front', 'Back', 'Server', 'Testing'];
     return workareas.map(area => `
-      <label><input type="checkbox" class="workarea-option" value="${area}" ${selectedWorkareas.includes(area) ? 'checked' : ''}> ${area}</label><br>
+      <label>
+        <input type="checkbox" name="workarea" class="workarea-option" value="${area}" ${selectedWorkareas.includes(area) ? 'checked' : ''}>
+        ${area}
+      </label><br>
     `).join('');
   }
+
 
   addEventListeners(modalId, dataKey) {
     const card = this.querySelector('.card');
@@ -311,7 +309,18 @@ class TaskSticker extends HTMLElement {
     const title = titleInput ? titleInput.value : null;
     const description = descriptionInput ? descriptionInput.value : null;
     const dueDateEdit = dueDateInput ? dueDateInput.value : null;
-    const workarea = this.querySelector('input[type="checkbox"]:checked')?.value;
+
+    const selectedWorkareas = Array.from(modal.querySelectorAll('input[type="checkbox"]:checked'));
+    const workareaCount = selectedWorkareas.length;
+    
+    // Si hay más de un área de trabajo seleccionada, muestra una alerta y termina
+    if (workareaCount > 1) {
+      alert('Solo se puede seleccionar un área de trabajo.');
+      return;
+    }
+  
+    // Obtén el valor del área de trabajo si hay una seleccionada
+    const workarea = workareaCount === 1 ? selectedWorkareas[0].value : null;
 
     console.log(title, description, dueDateEdit, workarea);
     
