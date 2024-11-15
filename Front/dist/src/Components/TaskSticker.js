@@ -299,13 +299,6 @@ class TaskSticker extends HTMLElement {
     }
   }
 
- /* console.log(typeof(cardId));
-  console.log(typeof(title));
-  console.log(typeof(description));
-  console.log(typeof(dueDate));
-  console.log(typeof(color));
-  console.log(typeof(user_id));
-  console.log(typeof(project_id));*/
 
   
   async saveTask(cardId, modal) {
@@ -318,7 +311,27 @@ class TaskSticker extends HTMLElement {
     const title = titleInput ? titleInput.value : null;
     const description = descriptionInput ? descriptionInput.value : null;
     const dueDateEdit = dueDateInput ? dueDateInput.value : null;
-    const color = this.getAttribute('color');
+    const workarea = this.querySelector('input[type="checkbox"]:checked')?.value;
+
+    console.log(title, description, dueDateEdit, workarea);
+    
+    let color;
+    switch (workarea) {
+      case "Front":
+        color = "pink";
+        break;
+      case "Back":
+        color = "blue";
+        break;
+      case "Server":
+        color = "yellow";
+        break;
+      case "Testing":
+        color = "green";
+        break;
+      default:
+        color = "grey"; // Color por defecto si `workarea` no coincide con ningún caso
+    }
   
     if (!title || !description) {
       alert('El título y la descripción son obligatorios');

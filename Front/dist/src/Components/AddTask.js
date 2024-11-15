@@ -130,27 +130,10 @@ class AddTask extends HTMLElement {
     const duedate = this.querySelector('#task-deadline').value;
     const workarea = this.querySelector('input[name="workarea"]:checked')?.value;
   
+    console.log(title, description, duedate, workarea);
+    
     // Valor por defecto para `type`
     const type = "on-hold";
-  
-    // Determinar el color basado en `workarea`
-    let color;
-    switch (workarea) {
-      case "Front":
-        color = "pink";
-        break;
-      case "Back":
-        color = "blue";
-        break;
-      case "Server":
-        color = "yellow";
-        break;
-      case "Testing":
-        color = "green";
-        break;
-      default:
-        color = "grey"; // Color por defecto si `workarea` no coincide con ningún caso
-    }
   
     const token = localStorage.getItem('token');
   
@@ -178,7 +161,7 @@ class AddTask extends HTMLElement {
           description: "${description}",
           duedate: "${formattedDueDate}",
           type: "${type}",
-          color: "${color}", 
+          color: "${workarea}", 
           projects_id: "${defaultProjectId}"
         ) {
           _id
