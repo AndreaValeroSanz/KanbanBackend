@@ -2,12 +2,12 @@ document.addEventListener('DOMContentLoaded', function () {
   getAllTasks();
 });
 function convertToISODate(dateString) {
-  const parts = dateString.split('/'); // Suponemos que el formato es "DD/MM/YYYY"
+ /* const parts = dateString.split('/'); // Suponemos que el formato es "DD/MM/YYYY"
   if (parts.length === 3) {
     // Convertir de "DD/MM/YYYY" a "YYYY-MM-DD"
-    return `${parts[2]}/${parts[1]}/${parts[0]}`;
-  }
-  return null; // Si el formato no es válido, devolvemos null
+    return `${parts[2]}-${parts[1]}-${parts[0]}`;
+  }*/
+  return dateString; // Si el formato no es válido, devolvemos null
 }
 async function getAllTasks() {
   const taskContainer = document.getElementById('taskContainer');
