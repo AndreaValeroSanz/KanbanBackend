@@ -39,27 +39,3 @@ const startServer = async () => {
 };
 
 startServer();
-
-
-// query {
-//   getAllCards {
-//     _id
-//     title
-//     description
-//     duedate
-//     type
-//     color
-//     user_id
-//     projects_id
-//   }
-// }
-
-// mutation {
-//   login(email: "usuario@example.com", password: "password123") {
-//     token
-//     user {
-//       _id
-//       email
-//     }
-//   }
-// }
