@@ -7,7 +7,7 @@ function convertToISODate(dateString) {
     // Convertir de "DD/MM/YYYY" a "YYYY-MM-DD"
     return `${parts[2]}-${parts[1]}-${parts[0]}`;
   }
-  return dateString; // Si el formato no es válido, devolvemos null
+  return dateString; 
 }
 async function getAllTasks() {
   const taskContainer = document.getElementById('taskContainer');
