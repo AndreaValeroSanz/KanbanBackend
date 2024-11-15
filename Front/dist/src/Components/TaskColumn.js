@@ -17,7 +17,7 @@ class TaskColumn extends HTMLElement {
           box-shadow: -10px 10px 0px 0px rgba(219, 219, 219, 1);
           background-color: #F8F8F8;
           padding: 10px;
-          width: 30vh;
+          width: 28vh;
           min-height: 300px;
           height: 70vh;
           border: 1px solid #dbdbdb;

@@ -1,7 +1,14 @@
 document.addEventListener('DOMContentLoaded', function () {
   getAllTasks();
 });
-
+function convertToISODate(dateString) {
+  const parts = dateString.split('/'); // Suponemos que el formato es "DD/MM/YYYY"
+  if (parts.length === 3) {
+    // Convertir de "DD/MM/YYYY" a "YYYY-MM-DD"
+    return `${parts[2]}-${parts[1]}-${parts[0]}`;
+  }
+  return dateString; // Si el formato no es válido, devolvemos null
+}
 async function getAllTasks() {
   const token = localStorage.getItem('token'); // Get the token from localStorage
 
@@ -72,12 +79,26 @@ async function getAllTasks() {
       }
 
       const postItColour = color;
-      console.log(`Card ID: ${_id}, Title: ${title}, Description: ${description}, Due Date: ${duedate}, Type: ${type}, Color: ${color}`);
+     // console.log(`Card ID: ${_id}, Title: ${title}, Description: ${description}, Due Date: ${duedate}, Type: ${type}`);
+      console.log(new Date(duedate));
 
-      const dueDateValue = duedate ? new Date(duedate) : null;
-      const dueDateString = dueDateValue && !isNaN(dueDateValue.getTime())
-        ? dueDateValue.toISOString().split('T')[0]
-        : 'Sin fecha';
+      let dueDateString = 'Sin fecha'; // Valor por defecto
+
+      // Si duedate es un número (milisegundos)
+      if (typeof duedate === 'number') {
+        const dueDateValue = new Date(duedate); // Convertir milisegundos a fecha
+        dueDateString = dueDateValue.toISOString().split('T')[0]; // Obtener solo la parte de la fecha
+      }
+      // Si duedate es una cadena (esperamos que sea "DD/MM/YYYY")
+      else if (typeof duedate === 'string') {
+        const formattedDate = convertToISODate(duedate); // Convertir "DD/MM/YYYY" a "YYYY-MM-DD"
+        if (formattedDate) {
+          const dueDateValue = new Date(formattedDate); // Crear un objeto Date con la fecha reformateada
+          if (!isNaN(dueDateValue.getTime())) {
+            dueDateString = dueDateValue.toISOString().split('T')[0]; // Obtener solo la parte de la fecha
+          }
+        }
+      }
 
       // Create a draggable div
       const dragDiv = document.createElement('div');
@@ -87,7 +108,7 @@ async function getAllTasks() {
       const taskSticker = document.createElement('task-sticker');
       taskSticker.setAttribute('title', title);
       taskSticker.setAttribute('description', description);
-      taskSticker.setAttribute('postItColour', postItColour);
+      taskSticker.setAttribute('color', postItColour);
       taskSticker.setAttribute('dueDate', dueDateString);
       taskSticker.setAttribute('card-id', _id); // Assign the 'card-id' correctly
 

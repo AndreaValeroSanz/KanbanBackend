@@ -94,7 +94,7 @@ const resolvers = {
     },
     editCard: async (
       _, 
-      { cardId, title, description, duedate, type, color, projects_id },
+      { id, title, description, duedate,  color },
       { userId }
     ) => {
       try {
@@ -102,15 +102,16 @@ const resolvers = {
           throw new Error('No autorizado');
         }
 
+      
         const updatedCard = await Card.findByIdAndUpdate(
-          cardId,
+          id,
           {
             ...(title && { title }),
             ...(description && { description }),
             ...(duedate && { duedate }),
-            ...(type && { type }),
+            
             ...(color && { color }),
-            ...(projects_id && { projects_id }),
+           
           },
           { new: true }
         );
@@ -147,6 +148,5 @@ const resolvers = {
     },
   },
 };
-
 
 export default resolvers;

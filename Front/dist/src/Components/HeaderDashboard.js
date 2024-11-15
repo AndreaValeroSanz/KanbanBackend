@@ -17,46 +17,10 @@ class Header extends HTMLElement {
               <div class="d-flex justify-content-center">
                 <div class="btn-group dropend">
                    <div class="d-flex justify-content-between align-items-around ">
-                        <button type="button" class="btn btn-transparent" data-bs-toggle="button">
+                        
                           <h1>Dashboard</h1>
-                        </button>
-                        <button type="button" class="btn btn-transparent dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                          <i class="bi bi-chevron-down" style="color: black;"></i>
-                        </button>
-                    <ul class="dropdown-menu">
-                   <ul class="list-unstyled">
-                    <li class="py-1">
-                      <button type="button" class="btn ">
                         
-                      Proyecto 1
-                      </button>
-                    </li>
-
-                    <li class="py-1">
-                      <button type="button" class="btn ">
-
-                        Proyecto 2
-                      </button>
-                    </li>
-
-                    <li class="py-1">
-                      <button type="button" class="btn ">
-                    
-                        Proyecto 3
-                      </button>
-                    </li>
-
-                    <li class="py-1">
-                      <button type="button" class="btn ">
-                        
-                        Proyecto 4
-                      </button>
-                    </li>
-                    <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="#">Add n&#101;w Project</a></li>
-
-                  </ul>
-                    </ul>
+                  
                   </div>
               </div>
             </div>

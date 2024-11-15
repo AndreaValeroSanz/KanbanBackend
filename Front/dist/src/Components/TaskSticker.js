@@ -1,7 +1,10 @@
 class TaskSticker extends HTMLElement {
+
+
   constructor() {
     super();
   }
+  
 
   connectedCallback() {
     const attributes = this.getAttributes();
@@ -14,7 +17,7 @@ class TaskSticker extends HTMLElement {
     return {
       title: this.getAttribute('title') || 'Untitled Task',
       description: this.getAttribute('description') || 'Please, remember to write a task description.',
-      postItColour: this.getAttribute('postItColour'),
+      color: this.getAttribute('color'),
       dueDate: this.getAttribute('dueDate') || 'No date assigned.',
       workarea: this.getAttribute('workarea') || '',
       dataKey: this.getAttribute('data-key') || `task-${Math.floor(Math.random() * 10000)}`,
@@ -50,7 +53,7 @@ class TaskSticker extends HTMLElement {
   }
 
   // Aquí se crea el HTML de la tarjeta
-  getCardHTML({ title, dueDate, postItColour, modalId }) {
+  getCardHTML({ title, dueDate, color, modalId }) {
     return  `
     <style>
         .card-margin {
@@ -74,8 +77,8 @@ class TaskSticker extends HTMLElement {
             background-clip: border-box;
             border: 1px solid #e6e4e9;
             border-radius: 8px;
-            width: 20vh;
-            height: 20vh;
+            width: 24vh;
+            height: 24vh;
         }
     
         .card .card-header.no-border {
@@ -110,6 +113,10 @@ class TaskSticker extends HTMLElement {
         .background-green {
           background-color: #a6d0b3;
         }
+    
+        .background-grey {
+          background-color: #7c8491;
+        }
           
            .btn-task btn{
                 border-radius: 50%;
@@ -124,33 +131,31 @@ class TaskSticker extends HTMLElement {
             
                 background-color: transparent;
               }
-                
+      h5{
+      font-weight: 600;
+      }          
     
     </style>
     
     <div class="container ">
         <div class="row  ">
             <div class="g-0 ">
-                <div class="card card-margin  background-${postItColour}">
-                   
-                    <div class="card-body d-flex pt-0 g-0 p-0 mx-2 row background-${postItColour}">
-                      <h5 class="card-title background-${postItColour} text-center p-2" id="card-title">${title}</h5>
+                <div class="card card-margin  background-${color}">
+                    <div class="card-header no-border d-flex justify-content-end mt-2  ">
+                     
+                    </div>
+                    <div class="card-body d-flex pt-0 g-0 p-0 mx-2 row background-${color}">
+                      <h5 class="card-title background-${color} text-center" id="card-title">${title}</h5>
                                    
-                                <div class="background-${postItColour} d-flex py-2 ">
-                                    <span class=" d-flex align-self-end background-${postItColour}">${dueDate}</span>
+                                <div class="background-${color} d-flex  align-self-center ">
+                                    <span class=" d-flex align-self-end background-${color}">${dueDate}</span>
                               
     
                                    
-                               
-                                            ${'' /* < <div class="btn-task background-${postItColour} d-flex justify-content-end pe-1 pb-1" role="group" aria-label="Collaborators icons">
-                                            <button type="button" class="btn background-${postItColour}">img src="https://placehold.co/40x40"></img></button> */}
-                                                
-                                        
-                            </div>
+                              
                     
                         
-                          
-                  
+                            
                         </div>
                              
                 </div>
@@ -161,11 +166,11 @@ class TaskSticker extends HTMLElement {
         `;
   }
 
-  getModalHTML({ title, description, dueDate, modalId, postItColour }, selectedWorkareas) {
+  getModalHTML({ title, description, dueDate, modalId, color }, selectedWorkareas) {
     return `
       <div class="modal fade" id="${modalId}" tabindex="-1" aria-labelledby="${modalId}Label" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content background-${postItColour}">
+          <div class="modal-content background-${color}">
             <div class="modal-header">
               <input type="text" class="form-control" id="editTitle-${modalId}" placeholder="Task Title" value="${title}">
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -218,6 +223,26 @@ class TaskSticker extends HTMLElement {
         }
         this.deleteTask(dataKey, cardId);
       });
+
+        // aquí mira tú yo que sé, buena suerte.
+        const saveButton = modal.querySelector('.save-task');
+        if (saveButton) {
+          saveButton.addEventListener('click', () => {
+            const cardId = this.getAttribute('card-id');
+            if (!cardId || cardId === "null" || cardId === "undefined") {
+              console.error("Invalid cardId:", cardId);
+              alert("Cannot save the task: invalid card ID.");
+              return;
+            }
+            this.saveTask(cardId, modal);
+          });
+        } else {
+          console.error("Save button not found in the modal.");
+        }
+        
+
+        // fin del buena suerte.
+
     } else {
       console.error(`Modal or card element not found. Modal ID: ${modalId}`);
     }
@@ -273,6 +298,86 @@ class TaskSticker extends HTMLElement {
       alert(`Error: ${error.message}`);
     }
   }
+
+ /* console.log(typeof(cardId));
+  console.log(typeof(title));
+  console.log(typeof(description));
+  console.log(typeof(dueDate));
+  console.log(typeof(color));
+  console.log(typeof(user_id));
+  console.log(typeof(project_id));*/
+
+  
+  async saveTask(cardId, modal) {
+    const token = localStorage.getItem('token');
+    const titleInput = modal.querySelector(`#editTitle-${modal.id}`);
+    const descriptionInput = modal.querySelector(`#editDescription-${modal.id}`);
+    const dueDateInput = modal.querySelector(`#editDueDate-${modal.id}`);
+    
+    // Verifica si los inputs existen antes de obtener sus valores
+    const title = titleInput ? titleInput.value : null;
+    const description = descriptionInput ? descriptionInput.value : null;
+    const dueDateEdit = dueDateInput ? dueDateInput.value : null;
+    const color = this.getAttribute('color');
+  
+    if (!title || !description) {
+      alert('El título y la descripción son obligatorios');
+      return;
+    }
+    
+   
+    try {
+      const query = `
+        mutation {
+          editCard(id: "${cardId}", title: "${title}", description: "${description}", duedate: "${dueDateEdit}", color: "${color}") {
+            _id
+            title
+            description
+            duedate
+            color
+          }
+        }
+      `;
+      const response = await fetch('http://localhost:3000/graphql', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({ query }),
+      });
+  
+      const result = await response.json();
+      if (result.errors) throw new Error(result.errors[0].message);
+  
+      alert('¡Tarea guardada exitosamente!');
+  
+      // Aquí actualizamos la card en el DOM
+      const cardTitle = this.querySelector('.card-title');     
+      const cardDueDate = this.querySelector('.card-body span');
+      
+      // Asegúrate de que los elementos existen antes de intentar actualizarlos
+      if (cardTitle) cardTitle.textContent = title;      
+      if (cardDueDate) cardDueDate.textContent = dueDateEdit ? new Date(dueDateEdit).toISOString().split('T')[0] : 'Sin fecha asignada';
+
+        
+
+      // Cambia el color de la card si fue modificado
+      const cardElement = this.querySelector('.card');
+      if (cardElement) {
+        cardElement.className = `card card-margin background-${color}`;
+      }
+      location.reload();
+      
+      return result.data.editCard;
+      
+    } catch (error) {
+      console.error('Error al guardar la tarea:', error.message);
+      alert(`Error: ${error.message}`);
+    }
+
+  }
+  
+  
+
+
 
 }
 

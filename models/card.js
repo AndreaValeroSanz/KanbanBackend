@@ -11,7 +11,7 @@ const CardSchema = new Schema({
     required: true,
   },
   duedate: {
-    type: Date,
+    type: String,
     required: true,
   },
   type: {
@@ -37,3 +37,5 @@ const CardSchema = new Schema({
 const Card = mongoose.model('Card', CardSchema);
 
 export default Card;
+
+

@@ -107,27 +107,7 @@ class AddTask extends HTMLElement {
                   </div>
                 </div>
 
-                <div class="mb-3">
-                  <p>Assign Collaborators</p>
-                  <div class="d-flex justify-content-around align-items-center mb-2">
-                    <i class="bi bi-person-circle"></i>
-                    <p>User1</p>
-                    <button type="button" class="btn btn-primary btn-sm">Add</button>
-                  </div>
-                  <div class="d-flex justify-content-around align-items-center mb-2">
-                    <i class="bi bi-person-circle"></i>
-                    <p>User2</p>
-                    <button type="button" class="btn btn-primary btn-sm">Add</button>
-                  </div>
-                  <div class="d-flex justify-content-around align-items-center mb-2">
-                    <i class="bi bi-person-circle"></i>
-                    <p>User3</p>
-                    <button type="button" class="btn btn-primary btn-sm">Add</button>
-                  </div>
-                  <div class="d-flex justify-content-end">
-                    <button type="button" class="btn btn-link">Add more...</button>
-                  </div>
-                </div>
+               
               </form>
             </div>
             <div class="modal-footer">
