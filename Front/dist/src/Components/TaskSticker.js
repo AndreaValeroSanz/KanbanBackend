@@ -87,7 +87,7 @@ class TaskSticker extends HTMLElement {
         }
     
         .card .card-header {
-            background: red;
+            background-color: transparent;
             padding: 0 0.9375rem;
             font-weight: 500;
             display: flex;
@@ -142,7 +142,7 @@ class TaskSticker extends HTMLElement {
         <div class="row  ">
             <div class="g-0 ">
                 <div class="card card-margin  background-${color}">
-                    <div class="card-header no-border d-flex justify-content-end mt-2  ">
+                    <div class="card-header no-border d-flex justify-content-end mt-2   ">
                      
                     </div>
                     <div class="card-body d-flex pt-0 g-0 p-0 mx-2 row background-${color}">
@@ -184,8 +184,8 @@ class TaskSticker extends HTMLElement {
               </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-outline-danger delete-task">Delete</button>
-              <button type="button" class="btn btn-outline-secondary share-task">Share</button>
+              <button type="button" class="btn btn-danger delete-task">Delete</button>
+              <button type="button" class="btn btn-secondary share-task">Share</button>
               <button type="button" class="btn btn-primary save-task">Save</button>
             </div>
           </div>
